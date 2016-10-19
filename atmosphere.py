@@ -4,7 +4,7 @@
 ################################################################################
 import pygame
 from sys import argv
-
+import csv
 
 def getFilesList(environmentFileName):
 	output = []
@@ -25,6 +25,9 @@ if(__name__ == "__main__"):
 	pygame.init()
 	
 	sounds = []
+	
+	if(debugInfo):
+		print getFilesList(envFileName)
 	for sFile in getFilesList(envFileName):
 		newSound = pygame.mixer.Sound('./data/%s' % sFile[0])
 		newSound.set_volume(float(sFile[1]/100.0))

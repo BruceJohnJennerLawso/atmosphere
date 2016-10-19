@@ -1,5 +1,5 @@
 #!/bin/bash
 
-geany atmosphere.py gitter &
+geany atmosphere.py ./envfiles/* gitter &
 
 exit 0

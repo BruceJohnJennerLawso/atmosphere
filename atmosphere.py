@@ -18,11 +18,16 @@ def getFilesList(environmentFileName):
 
 
 if(__name__ == "__main__"):
+	debugInfo = True
+	
 	envFileName = argv[1]
+	
+	pygame.init()
+	
+	pygame.display.set_mode((200,100))
 	
 	pygame.mixer.init()
 	pygame.mixer.pre_init(44100, -16, 2, 2048)
-	pygame.init()
 	
 	sounds = []
 	
@@ -30,8 +35,22 @@ if(__name__ == "__main__"):
 		print getFilesList(envFileName)
 	for sFile in getFilesList(envFileName):
 		newSound = pygame.mixer.Sound('./data/%s' % sFile[0])
-		newSound.set_volume(float(sFile[1]/100.0))
+		decVolume = float(sFile[1]/100.0)
+		print decVolume
+		newSound.set_volume(decVolume)
+		newSound.play()
 		sounds.append(newSound)
 		
 	for sound in sounds:
 		sound.play()
+		
+	clock = pygame.time.Clock()
+	clock.tick(10)
+	while pygame.mixer.music.get_busy():
+		pygame.event.poll()
+		clock.tick(10)	
+	while(True):
+		for sound in sounds:
+			sound.play()
+		pass
+		

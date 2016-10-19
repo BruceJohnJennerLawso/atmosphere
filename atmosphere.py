@@ -40,17 +40,15 @@ if(__name__ == "__main__"):
 		newSound.set_volume(decVolume)
 		newSound.play()
 		sounds.append(newSound)
+	if(debugInfo):
+		print "Finished loading %i sounds" % len(getFilesList(envFileName))
 		
 	for sound in sounds:
 		sound.play()
 		
 	clock = pygame.time.Clock()
 	clock.tick(10)
-	while pygame.mixer.music.get_busy():
-		pygame.event.poll()
-		clock.tick(10)	
 	while(True):
-		for sound in sounds:
-			sound.play()
-		pass
+		print pygame.event.poll()
+		clock.tick(10)	
 		

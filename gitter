@@ -1,0 +1,5 @@
+#!/bin/bash
+
+geany gitter &
+
+exit 0

@@ -24,7 +24,7 @@ if(__name__ == "__main__"):
 	
 	pygame.init()
 	
-	pygame.display.set_mode((200,100))
+	pygame.display.set_mode((400,110))
 	
 	pygame.mixer.init()
 	pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -49,6 +49,6 @@ if(__name__ == "__main__"):
 	clock = pygame.time.Clock()
 	clock.tick(10)
 	while(True):
-		print pygame.event.poll()
+		pygame.event.poll()
 		clock.tick(10)	
 		

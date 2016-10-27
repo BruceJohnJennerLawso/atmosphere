@@ -1,2 +1,3 @@
 pygame
 dir2ogg
+python-tk

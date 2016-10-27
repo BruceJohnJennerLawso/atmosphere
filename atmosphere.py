@@ -8,10 +8,15 @@ import csv
 import multiprocessing as mp
 import random
 
+from Tkinter import Tk
+from tkFileDialog import askopenfilename
+
+
 def getFilesList(environmentFileName):
 	output = []
 	
-	with open('./envfiles/%s' % (environmentFileName), 'rb') as foo:
+	##with open('./envfiles/%s' % (environmentFileName), 'rb') as foo:
+	with open('%s' % (environmentFileName), 'rb') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
 			output.append([row[0], int(row[1]), row[2]])
@@ -26,10 +31,16 @@ def getFillColour(currentFillGreen, loadFinished):
 
 if(__name__ == "__main__"):
 	
+
+	Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+	filename = askopenfilename(initialdir='./envfiles') # show an "Open" dialog box and return the path to the selected file
+	print(filename)
+	envFileName = filename
+	
 	version = 0.1
 	debugInfo = True
 	
-	envFileName = argv[1]
+	##envFileName = argv[1]
 	
 	pygame.init()
 	
@@ -52,22 +63,26 @@ if(__name__ == "__main__"):
 	sounds = []
 	musicSounds = []
 	
-	if(debugInfo):
-		print getFilesList(envFileName)
+	
+	try:
+		if(debugInfo):
+			print getFilesList(envFileName)
 		
-	
-	for sFile in getFilesList(envFileName):
-		newSound = pygame.mixer.Sound('./data/%s' % sFile[0])
-		decVolume = float(sFile[1]/100.0)
-		print decVolume
-		newSound.set_volume(decVolume)
-		##newSound.play()
-		if(sFile[2] == 'background'):
-			sounds.append([newSound, 0])
-		elif(sFile[2] == 'music'):
-			musicSounds.append([newSound, 0])	
-			## in order, the sound object, and how many times its been played
-	
+		for sFile in getFilesList(envFileName):
+			newSound = pygame.mixer.Sound('./data/%s' % sFile[0])
+			decVolume = float(sFile[1]/100.0)
+			print decVolume
+			newSound.set_volume(decVolume)
+			##newSound.play()
+			if(sFile[2] == 'background'):
+				sounds.append([newSound, 0])
+			elif(sFile[2] == 'music'):
+				musicSounds.append([newSound, 0])	
+				## in order, the sound object, and how many times its been played
+	except TypeError:
+		print "No env file selected, exiting..."
+		exit()		
+			
 	if(debugInfo):
 		print "Finished loading %i sounds" % len(getFilesList(envFileName))
 	

@@ -107,16 +107,41 @@ if(__name__ == "__main__"):
 	clock.tick(10)
 	while(True):
 		pygame.event.poll()
+		
+		for event in pygame.event.get():
+			if(event.type == pygame.QUIT):
+				break
+		
 		clock.tick(10)	
 		if(not music.get_busy()):
 			## music has finished, need to put another track on
 			randomMusic = random.choice(musicSounds)
 			randomMusic[1] += 1 
 			music.play(randomMusic[0])
-
-
-
-
+		if(not background1.get_busy()):		
+			## background sound on channel 1 has finished,
+			## need to put another track on
+			
+			firstRandomChoice = random.choice(sounds)
+			while(firstRandomChoice == secondRandomChoice):
+				firstRandomChoice = random.choice(sounds)
+			## pick something randomly out of the list and make sure it isnt
+			## the same track already playing on the other background noise
+			## channel
+			firstRandomChoice[1] += 1 
+			background1.play(firstRandomChoice[0])
+		if(not background2.get_busy()):		
+			## background sound on channel 2 has finished,
+			## need to put another track on
+			
+			secondRandomChoice = random.choice(sounds)
+			while(secondRandomChoice == firstRandomChoice):
+				secondRandomChoice = random.choice(sounds)
+			## pick something randomly out of the list and make sure it isnt
+			## the same track already playing on the other background noise
+			## channel
+			secondRandomChoice[1] += 1 
+			background2.play(secondRandomChoice[0])	
 
 
 

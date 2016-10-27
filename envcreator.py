@@ -44,11 +44,11 @@ def getListOfFiles(dialogPrompt):
 
 def file_save(text2save):
 	f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".csv", initialdir='./envfiles')
-	if f is None: # asksaveasfile return `None` if dialog closed with "cancel".
-		return
-	##text2save = str(text.get(1.0, END)) # starts from `1.0`, not `0.0`
+	if f is None:
+		return True
+		## hit cancel button, didnt save anything
 	f.write(text2save)
-	f.close() # `()` was missing.
+	f.close()
 
 if(__name__ == "__main__"):
 
@@ -65,5 +65,6 @@ if(__name__ == "__main__"):
 	for music in musicFiles:
 		outputCsv += "%s,%s,%s\n" % (ntpath.basename(music), musicVolume,'music')		
 	print outputCsv
+	
 	file_save(outputCsv)
 

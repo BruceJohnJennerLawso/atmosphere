@@ -110,8 +110,16 @@ if(__name__ == "__main__"):
 		
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
+				print "pygame.QUIT event heard"
 				break
-		
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_LEFT:
+					pass
+				if event.key == pygame.K_RIGHT:
+					print "pygame.K_RIGHT event heard"
+					randomMusic = random.choice(musicSounds)
+					randomMusic[1] += 1 
+					music.play(randomMusic[0])
 		clock.tick(10)	
 		if(not music.get_busy()):
 			## music has finished, need to put another track on

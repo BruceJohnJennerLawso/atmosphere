@@ -4,24 +4,15 @@
 ################################################################################
 import pygame
 from sys import argv
-import csv
 import multiprocessing as mp
 import random
 
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 
+import sound
+import envLoader
 
-def getFilesList(environmentFileName):
-	output = []
-	
-	##with open('./envfiles/%s' % (environmentFileName), 'rb') as foo:
-	with open('%s' % (environmentFileName), 'rb') as foo:
-		reader = csv.reader(foo)
-		for row in reader:
-			output.append([row[0], int(row[1]), row[2]])
-			## 0 is filename, 1 is integer volume		
-	return output
 
 def getFillColour(currentFillGreen, loadFinished):
 	if(loadFinished):
@@ -40,7 +31,6 @@ if(__name__ == "__main__"):
 	version = 0.1
 	debugInfo = True
 	
-	##envFileName = argv[1]
 	
 	pygame.init()
 	
@@ -61,30 +51,30 @@ if(__name__ == "__main__"):
 	background2 = pygame.mixer.Channel(4)
 	
 	sounds = []
+	shortSounds = []
 	musicSounds = []
 	
 	
 	try:
 		if(debugInfo):
-			print getFilesList(envFileName)
+			print envLoader.getFilesList(envFileName)
 		
-		for sFile in getFilesList(envFileName):
-			newSound = pygame.mixer.Sound('./data/%s' % sFile[0])
+		for sFile in envLoader.getFilesList(envFileName):
 			decVolume = float(sFile[1]/100.0)
-			print decVolume
-			newSound.set_volume(decVolume)
-			##newSound.play()
+
 			if(sFile[2] == 'background'):
-				sounds.append([newSound, 0])
+				sounds.append(sound.Sound('./data/%s' % sFile[0], decVolume, sFile[2]))
+			elif(sFile[2] == 'short'):
+				shortSounds.append(sound.Sound('./data/%s' % sFile[0], decVolume, sFile[2]))				
 			elif(sFile[2] == 'music'):
-				musicSounds.append([newSound, 0])	
+				musicSounds.append(sound.Sound('./data/%s' % sFile[0], decVolume, sFile[2]))	
 				## in order, the sound object, and how many times its been played
 	except TypeError:
 		print "No env file selected, exiting..."
 		exit()		
 			
 	if(debugInfo):
-		print "Finished loading %i sounds" % len(getFilesList(envFileName))
+		print "Finished loading %i sounds" % len(envLoader.getFilesList(envFileName))
 	
 	
 	
@@ -93,20 +83,27 @@ if(__name__ == "__main__"):
 	while(firstRandomChoice == secondRandomChoice):
 		secondRandomChoice = random.choice(sounds)
 		## keep trying until we get two different sounds
-	firstRandomChoice[1] += 1
-	secondRandomChoice[1] += 1
 	
-	background1.play(firstRandomChoice[0])
-	background2.play(secondRandomChoice[0])	
+	firstRandomChoice.loadSound()
+	secondRandomChoice.loadSound()
+	
+	background1.play(firstRandomChoice.getSound())
+	background2.play(secondRandomChoice.getSound())	
+	
+	firstRandomChoice.incrementPlayCounter()
+	secondRandomChoice.incrementPlayCounter()
 	
 	randomMusic = random.choice(musicSounds)
-	randomMusic[1] += 1 
-	music.play(randomMusic[0])
+	## small thing that could be changed here, a quick check to make sure
+	## the same sound isnt playing back to back.
+	
+	## its not very likely, but on a small playlist it would be annoying
+	randomMusic.loadSound()
+	music.play(randomMusic.getSound())
 		
 	clock = pygame.time.Clock()
 	clock.tick(10)
 	while(True):
-		pygame.event.poll()
 		
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
@@ -118,26 +115,34 @@ if(__name__ == "__main__"):
 				if event.key == pygame.K_RIGHT:
 					print "pygame.K_RIGHT event heard"
 					randomMusic = random.choice(musicSounds)
-					randomMusic[1] += 1 
-					music.play(randomMusic[0])
+					randomMusic.loadSound()
+					music.play(randomMusic.getSound())
+					randomMusic.incrementPlayCounter()
+		pygame.event.poll()
 		clock.tick(10)	
 		if(not music.get_busy()):
 			## music has finished, need to put another track on
+			randomMusic.clearSound()
+			## clear the current music track from memory so we dont bleed all
+			## over the ram
 			randomMusic = random.choice(musicSounds)
-			randomMusic[1] += 1 
-			music.play(randomMusic[0])
+			## randomly choose a new music track
+			randomMusic.loadSound()
+			music.play(randomMusic.getSound())
+			randomMusic.incrementPlayCounter()
 		if(not background1.get_busy()):		
 			## background sound on channel 1 has finished,
 			## need to put another track on
-			
+			firstRandomChoice.clearSound()
 			firstRandomChoice = random.choice(sounds)
 			while(firstRandomChoice == secondRandomChoice):
 				firstRandomChoice = random.choice(sounds)
 			## pick something randomly out of the list and make sure it isnt
 			## the same track already playing on the other background noise
 			## channel
-			firstRandomChoice[1] += 1 
-			background1.play(firstRandomChoice[0])
+			firstRandomChoice.loadSound()
+			background1.play(firstRandomChoice.getSound())
+			firstRandomChoice.incrementPlayCounter()			
 		if(not background2.get_busy()):		
 			## background sound on channel 2 has finished,
 			## need to put another track on
@@ -148,9 +153,9 @@ if(__name__ == "__main__"):
 			## pick something randomly out of the list and make sure it isnt
 			## the same track already playing on the other background noise
 			## channel
-			secondRandomChoice[1] += 1 
-			background2.play(secondRandomChoice[0])	
-
+			secondRandomChoice.loadSound()
+			background2.play(secondRandomChoice.getSound())	
+			secondRandomChoice.incrementPlayCounter()
 
 
 

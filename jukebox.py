@@ -81,7 +81,7 @@ class Jukebox(object):
 
 	def chooseRandomBackground(self, channel, andPlay=False):
 		newRandomBackground = random.choice(self.sounds)
-		while((newRandomBackground == getBackgroundSoundByChannelNo(1))and(newRandomBackground == getBackgroundSoundByChannelNo(2))):
+		while((newRandomBackground == self.getBackgroundSoundByChannelNo(1))and(newRandomBackground == self.getBackgroundSoundByChannelNo(2))):
 			newRandomBackground = random.choice(self.sounds)
 		
 		if(channel == 1):

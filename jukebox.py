@@ -14,15 +14,33 @@ class Jukebox(object):
 		self.sounds = []
 		self.shortSounds = []
 		self.musicSounds = []
+		## lists of sound.Sound objects (a wrapper around pygame.mixer.Sound)
 		
 		self.musicChannel = pygame.mixer.Channel(5)
 		self.background1Channel = pygame.mixer.Channel(3)
 		self.background2Channel = pygame.mixer.Channel(4)
 		self.shortSoundChannel = pygame.mixer.Channel(6)
+		## channels which are used to play those sound objects, one at a time
+		
+		
+		self.masterVolume = 1.0
+		self.backgroundVolume = 1.0
+		self.shortVolume = 1.0
+		self.musicVolume = 1.0
+		
+		self.exitSignal = False
+		## indicator that we want to end the loop and get out of here
 		
 		self.loadEnvFile(envFileName, debugInfo)
+		## load up the objects with all of the info about the sounds, but
+		## without loading them into memory just yet
 		self.chooseInitialRandomBackgrounds()
+		## pick out a pair of background noise tracks at random
 		self.chooseInitialRandomMusic()
+		## randomly select our first music track to play
+		
+		## once this is all done, the object is just waiting for
+		## play() to be called
 
 	def loadEnvFile(self, envFileName, debugInfo=False):
 
@@ -125,7 +143,39 @@ class Jukebox(object):
 		if(andPlay):
 			self.musicChannel.play(self.randomMusic.getSound())			
 			self.randomMusic.incrementPlayCounter()
-			
+	
+	def getBackgroundVolume(self):
+		return (self.backgroundVolume*self.masterVolume)
+		
+	def getShortSoundVolume(self):
+		return (self.shortVolume*self.masterVolume)
+	
+	def getMusicVolume(self):
+		return (self.musicVolume*self.masterVolume)		
+	
+	
+	
+	def setBackgroundVolume(self, newVolume):
+		self.backgroundVolume = newVolume
+		background1Channel.set_volume(self.getBackgroundVolume())
+		background2Channel.set_volume(self.getBackgroundVolume())		
+	
+	def setShortSoundVolume(self, newVolume):
+		self.shortVolume = newVolume
+		self.shortSoundChannel.set_volume(self.getShortSoundVolume())
+		
+	def setMusicVolume(self, newVolume):
+		self.musicVolume = newVolume
+		self.musicChannel.set_volume(self.getMusicVolume())		
+		
+	def setMasterVolume(self, newVolume):
+		self.masterVolume = newVolume
+		background1Channel.set_volume(self.getBackgroundVolume())
+		background2Channel.set_volume(self.getBackgroundVolume())		
+		self.shortSoundChannel.set_volume(self.getShortSoundVolume())			
+		self.musicChannel.set_volume(self.getMusicVolume())	
+		
+					
 	def loop(self):
 		if(not self.musicChannel.get_busy()):
 			## music has finished, need to put another track on

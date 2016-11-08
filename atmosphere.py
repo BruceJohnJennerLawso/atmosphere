@@ -114,10 +114,10 @@ if(__name__ == "__main__"):
 					pass
 				if event.key == pygame.K_RIGHT:
 					print "pygame.K_RIGHT event heard"
-					randomMusic = random.choice(musicSounds)
-					randomMusic.loadSound()
-					music.play(randomMusic.getSound())
-					randomMusic.incrementPlayCounter()
+					music.fadeout(1000)
+					## this is much simpler, just fadeout the current track,
+					## and the main loop will put on a new track
+					
 		pygame.event.poll()
 		clock.tick(10)	
 		if(not music.get_busy()):

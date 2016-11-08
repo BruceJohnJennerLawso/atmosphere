@@ -42,6 +42,9 @@ class Sound(object):
 
 	def getVolume(self):
 		return self.volume
+	
+	def setVolume(self, volume):
+		self.volume = volume
 		
 	def getSoundType(self):
 		return self.soundType

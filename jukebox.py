@@ -6,12 +6,23 @@ import envLoader
 import sound
 
 import random
+import time
 import pygame
 
 def isBetween(value, lower, upper):
 	if((value >= lower)and(value <= upper)):
 		return True
 	return False
+
+
+
+def getValueFromGaussian(mean, stdev, valFloor = 0):
+	values = []
+	while(len(values) < 100):
+		value = random.gauss(mean, stdev)
+		if(value > valFloor):
+			values.append(value)
+	return random.choice(values)
 
 class Jukebox(object):
 	
@@ -28,6 +39,7 @@ class Jukebox(object):
 		## channels which are used to play those sound objects, one at a time
 		
 		
+		
 		self.masterVolume = 1.0
 		self.backgroundVolume = 1.0
 		self.shortVolume = 1.0
@@ -39,6 +51,15 @@ class Jukebox(object):
 		self.loadEnvFile(envFileName, debugInfo)
 		## load up the objects with all of the info about the sounds, but
 		## without loading them into memory just yet
+		
+		
+		self.lastShortSoundTime = time.time()
+		self.waitUntilNextShortSound = getValueFromGaussian(30.0, 10.0, 5.0)
+		
+		self.randomShortSound = random.choice(self.shortSounds)
+		self.randomShortSound.loadSound()
+		self.randomShortSound.setVolume(0.25)
+		
 		self.chooseInitialRandomBackgrounds()
 		## pick out a pair of background noise tracks at random
 		self.chooseInitialRandomMusic()
@@ -148,6 +169,19 @@ class Jukebox(object):
 		if(andPlay):
 			self.musicChannel.play(self.randomMusic.getSound())			
 			self.randomMusic.incrementPlayCounter()
+			
+	def chooseRandomShortSound(self,andPlay=False):
+		newRandomShortSound = random.choice(self.shortSounds)
+		while(newRandomShortSound == self.randomShortSound):
+			newRandomShortSound = random.choice(self.shortSounds)	
+		
+		self.randomShortSound.clearSound()	
+		self.randomShortSound = newRandomShortSound
+		self.randomShortSound.loadSound()
+		self.randomShortSound.setVolume(0.25)
+		if(andPlay):
+			self.shortSoundChannel.play(self.randomShortSound.getSound())			
+			self.randomShortSound.incrementPlayCounter()			
 	
 	def getBackgroundVolume(self):
 		return (self.backgroundVolume*self.masterVolume)
@@ -232,11 +266,16 @@ class Jukebox(object):
 			## background sound on channel 2 has finished,
 			## need to put another track on
 			self.chooseRandomBackground(2, andPlay=True)
+		
+		if((time.time()-self.lastShortSoundTime) >= self.waitUntilNextShortSound):
+			## weve passed or reached our target time, and need to play the
+			if(not self.shortSoundChannel.get_busy()):
+				self.chooseRandomShortSound(andPlay=True)
+			self.lastShortSoundTime = time.time()
+			self.waitUntilNextShortSound = getValueFromGaussian(30, 10, 5)
 
-
-
-
-
+	def countdownToNextShortSound(self):
+		return (self.waitUntilNextShortSound - (time.time()-self.lastShortSoundTime))
 
 
 

@@ -44,7 +44,7 @@ if(__name__ == "__main__"):
 	pygame.mixer.init()
 	
 	
-	screen = pygame.display.set_mode((400,120))
+	screen = pygame.display.set_mode((440,120))
 	pygame.display.set_caption("atmosphere %s" % version)
 	
 	##screen.fill((0,200,0))
@@ -71,13 +71,16 @@ if(__name__ == "__main__"):
 		
 	clock = pygame.time.Clock()
 	clock.tick(10)
-	while(True):
+	
+	
+	
+	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
-		
+		pygame.draw.rect(screen,blue,(120,0,20,2.0*atmosphericJukebox.countdownToNextShortSound()))		
 		pygame.draw.rect(screen,blue,(150,(100-100*atmosphericJukebox.getBackgroundVolume()),50,10))
 		pygame.draw.rect(screen,green,(225,(100-100*atmosphericJukebox.getMusicVolume()),50,10))
 		pygame.draw.rect(screen,blue,(300,(100-100*atmosphericJukebox.getShortSoundVolume()),50,10))
-		pygame.draw.rect(screen,red,(360,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
+		pygame.draw.rect(screen,red,(380,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
 		for event in pygame.event.get():
 			
 			def isBetween(value, lower, upper):
@@ -95,7 +98,7 @@ if(__name__ == "__main__"):
 						atmosphericJukebox.incrementMusicVolume(0.1)
 					elif(isBetween(pygame.mouse.get_pos()[0], 300,350)):	
 						atmosphericJukebox.incrementShortSoundVolume(0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 360,380)):	
+					elif(isBetween(pygame.mouse.get_pos()[0], 380,400)):	
 						atmosphericJukebox.incrementMasterVolume(0.1)	
 				if event.button == 5:
 					## scroll wheel down
@@ -105,16 +108,14 @@ if(__name__ == "__main__"):
 						atmosphericJukebox.incrementMusicVolume(-0.1)
 					elif(isBetween(pygame.mouse.get_pos()[0], 300,350)):	
 						atmosphericJukebox.incrementShortSoundVolume(-0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 360,380)):	
+					elif(isBetween(pygame.mouse.get_pos()[0], 380,400)):	
 						atmosphericJukebox.incrementMasterVolume(-0.1)	
 			if(event.type == pygame.QUIT):
-				print "pygame.QUIT event heard"
-				break
+				atmosphericJukebox.exitSignal = True
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_LEFT:
 					pass
 				if event.key == pygame.K_RIGHT:
-					print "pygame.K_RIGHT event heard"
 					atmosphericJukebox.nextMusicTrack(1000)
 					## this is much simpler, just fadeout the current track,
 					## and the main loop will put on a new track

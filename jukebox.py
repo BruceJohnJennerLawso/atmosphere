@@ -58,7 +58,7 @@ class Jukebox(object):
 		
 		self.randomShortSound = random.choice(self.shortSounds)
 		self.randomShortSound.loadSound()
-		self.randomShortSound.setVolume(0.25)
+		self.randomShortSound.setVolume(0.05)
 		
 		self.chooseInitialRandomBackgrounds()
 		## pick out a pair of background noise tracks at random
@@ -178,7 +178,7 @@ class Jukebox(object):
 		self.randomShortSound.clearSound()	
 		self.randomShortSound = newRandomShortSound
 		self.randomShortSound.loadSound()
-		self.randomShortSound.setVolume(0.25)
+		self.randomShortSound.setVolume(0.05)
 		if(andPlay):
 			self.shortSoundChannel.play(self.randomShortSound.getSound())			
 			self.randomShortSound.incrementPlayCounter()			

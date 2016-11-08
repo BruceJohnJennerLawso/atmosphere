@@ -59,11 +59,15 @@ if(__name__ == "__main__"):
 	backgroundVolume = getScaleValue('Background sounds volume', 'Volume')
 	musicFiles = getListOfFiles('Choose background music')	
 	musicVolume = getScaleValue('Music volume', 'Volume')
+	shortSoundFiles = getListOfFiles('Choose background sounds (short)')	
+	shortSoundVolume = getScaleValue('Short background volume', 'Volume')
 
 	for background in backgroundFiles:
 		outputCsv += "%s,%s,%s\n" % (ntpath.basename(background), backgroundVolume,'background')
 	for music in musicFiles:
 		outputCsv += "%s,%s,%s\n" % (ntpath.basename(music), musicVolume,'music')		
+	for short in shortSoundFiles:
+		outputCsv += "%s,%s,%s\n" % (ntpath.basename(short), shortSoundVolume,'short')		
 	print outputCsv
 	
 	file_save(outputCsv)

@@ -158,6 +158,8 @@ class Jukebox(object):
 	def getMusicVolume(self):
 		return (self.musicVolume*self.masterVolume)		
 	
+	def getMasterVolume(self):
+		return self.masterVolume
 	
 	
 	def setBackgroundVolume(self, newVolume):
@@ -208,6 +210,15 @@ class Jukebox(object):
 		self.shortSoundChannel.set_volume(self.getShortSoundVolume())			
 		self.musicChannel.set_volume(self.getMusicVolume())	
 		
+	def incrementMasterVolume(self, change):
+		if(isBetween(self.getMasterVolume()+change, 0.0, 1.0)):
+			self.setMasterVolume(self.getMasterVolume()+change)
+		else:
+			if(self.getMasterVolume()+change > 1.0):
+				self.setMasterVolume(1.0)
+			elif(self.getMasterVolume()+change < 0.0):
+				self.setMasterVolume(0.0)	
+
 					
 	def loop(self):
 		if(not self.musicChannel.get_busy()):

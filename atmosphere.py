@@ -25,6 +25,8 @@ if(__name__ == "__main__"):
 	
 	blue=(0,0,255)
 	green=(0,200,120)
+	red=(170,0,0)
+
 
 	Tk().withdraw()
 	## we don't want a full GUI, so keep the root window from appearing
@@ -42,7 +44,7 @@ if(__name__ == "__main__"):
 	pygame.mixer.init()
 	
 	
-	screen = pygame.display.set_mode((400,110))
+	screen = pygame.display.set_mode((400,120))
 	pygame.display.set_caption("atmosphere %s" % version)
 	
 	##screen.fill((0,200,0))
@@ -75,6 +77,7 @@ if(__name__ == "__main__"):
 		pygame.draw.rect(screen,blue,(150,(100-100*atmosphericJukebox.getBackgroundVolume()),50,10))
 		pygame.draw.rect(screen,green,(225,(100-100*atmosphericJukebox.getMusicVolume()),50,10))
 		pygame.draw.rect(screen,blue,(300,(100-100*atmosphericJukebox.getShortSoundVolume()),50,10))
+		pygame.draw.rect(screen,red,(360,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
 		for event in pygame.event.get():
 			
 			def isBetween(value, lower, upper):
@@ -92,6 +95,8 @@ if(__name__ == "__main__"):
 						atmosphericJukebox.incrementMusicVolume(0.1)
 					elif(isBetween(pygame.mouse.get_pos()[0], 300,350)):	
 						atmosphericJukebox.incrementShortSoundVolume(0.1)
+					elif(isBetween(pygame.mouse.get_pos()[0], 360,380)):	
+						atmosphericJukebox.incrementMasterVolume(0.1)	
 				if event.button == 5:
 					## scroll wheel down
 					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):
@@ -100,6 +105,8 @@ if(__name__ == "__main__"):
 						atmosphericJukebox.incrementMusicVolume(-0.1)
 					elif(isBetween(pygame.mouse.get_pos()[0], 300,350)):	
 						atmosphericJukebox.incrementShortSoundVolume(-0.1)
+					elif(isBetween(pygame.mouse.get_pos()[0], 360,380)):	
+						atmosphericJukebox.incrementMasterVolume(-0.1)	
 			if(event.type == pygame.QUIT):
 				print "pygame.QUIT event heard"
 				break
@@ -123,6 +130,10 @@ if(__name__ == "__main__"):
 					atmosphericJukebox.incrementShortSoundVolume(0.1)	
 				if(event.key == pygame.K_d):
 					atmosphericJukebox.incrementShortSoundVolume(-0.1)	
+				if(event.key == pygame.K_EQUALS):
+					atmosphericJukebox.incrementMasterVolume(0.1)	
+				if(event.key == pygame.K_MINUS):
+					atmosphericJukebox.incrementMasterVolume(-0.1)		
 		
 		pygame.event.poll()
 		clock.tick(10)	

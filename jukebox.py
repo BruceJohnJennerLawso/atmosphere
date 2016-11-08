@@ -8,6 +8,11 @@ import sound
 import random
 import pygame
 
+def isBetween(value, lower, upper):
+	if((value >= lower)and(value <= upper)):
+		return True
+	return False
+
 class Jukebox(object):
 	
 	def __init__(self, envFileName, debugInfo=False):
@@ -157,21 +162,49 @@ class Jukebox(object):
 	
 	def setBackgroundVolume(self, newVolume):
 		self.backgroundVolume = newVolume
-		background1Channel.set_volume(self.getBackgroundVolume())
-		background2Channel.set_volume(self.getBackgroundVolume())		
+		self.background1Channel.set_volume(self.getBackgroundVolume())
+		self.background2Channel.set_volume(self.getBackgroundVolume())		
+	
+	def incrementBackgroundVolume(self, change):
+		if(isBetween(self.getBackgroundVolume()+change, 0.0, 1.0)):
+			self.setBackgroundVolume(self.getBackgroundVolume()+change)
+		else:
+			if(self.getBackgroundVolume()+change > 1.0):
+				self.setBackgroundVolume(1.0)
+			elif(self.getBackgroundVolume()+change < 0.0):
+				self.setBackgroundVolume(0.0)	
+				
 	
 	def setShortSoundVolume(self, newVolume):
 		self.shortVolume = newVolume
 		self.shortSoundChannel.set_volume(self.getShortSoundVolume())
+
+	def incrementShortSoundVolume(self, change):
+		if(isBetween(self.getShortSoundVolume()+change, 0.0, 1.0)):
+			self.setShortSoundVolume(self.getShortSoundVolume()+change)
+		else:
+			if(self.getShortSoundVolume()+change > 1.0):
+				self.setShortSoundVolume(1.0)
+			elif(self.getShortSoundVolume()+change < 0.0):
+				self.setShortSoundVolume(0.0)	
 		
 	def setMusicVolume(self, newVolume):
 		self.musicVolume = newVolume
 		self.musicChannel.set_volume(self.getMusicVolume())		
+
+	def incrementMusicVolume(self, change):
+		if(isBetween(self.getMusicVolume()+change, 0.0, 1.0)):
+			self.setMusicVolume(self.getMusicVolume()+change)
+		else:
+			if(self.getMusicVolume()+change > 1.0):
+				self.setMusicVolume(1.0)
+			elif(self.getMusicVolume()+change < 0.0):
+				self.setMusicVolume(0.0)	
 		
 	def setMasterVolume(self, newVolume):
 		self.masterVolume = newVolume
-		background1Channel.set_volume(self.getBackgroundVolume())
-		background2Channel.set_volume(self.getBackgroundVolume())		
+		self.background1Channel.set_volume(self.getBackgroundVolume())
+		self.background2Channel.set_volume(self.getBackgroundVolume())		
 		self.shortSoundChannel.set_volume(self.getShortSoundVolume())			
 		self.musicChannel.set_volume(self.getMusicVolume())	
 		

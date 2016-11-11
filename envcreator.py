@@ -60,19 +60,25 @@ def addBackgroundTracksToCsv(outputCsv):
 	backgroundVolume = sliders.getScaleValue('Background sounds volume', 'Volume')
 	for background in backgroundFiles:
 		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(background), backgroundVolume,'background')
-
+	print outputCsv
 
 def addShortSoundClipsToCsv(outputCsv):
 	shortSoundFiles = getListOfFiles('Choose background sounds (short)')	
 	shortSoundVolume = sliders.getScaleValue('Short background volume', 'Volume')
 	for short in shortSoundFiles:
 		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(short), shortSoundVolume,'short')	
+	print outputCsv
 
 def addMusicTrackToCsv(outputCsv):
+	print "Adding Music Track to csv: ", outputCsv
 	musicFiles = getListOfFiles('Choose background music')	
-	musicVolume = sliders.getScaleValue('Music volume', 'Volume')	
+	print "Selected files, ", musicFiles
+	##musicVolume = sliders.getScaleValue('Music volume', 'Volume')	
+	print "Adding line to outputCsv"
 	for music in musicFiles:
-		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(music), musicVolume,'music')	
+		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(music), 50,'music')	
+		##outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(music), musicVolume,'music')			
+	print outputCsv
 
 if(__name__ == "__main__"):
 	outputCsv = ""

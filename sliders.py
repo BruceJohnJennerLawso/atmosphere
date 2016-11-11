@@ -21,9 +21,9 @@ def getScaleValue(scaleTitle, scaleUnits):
 	control.protocol("WM_DELETE_WINDOW",endControl)
 	
 
-	control.title(scaleTitle)
+	control.title()
 	control.geometry("650x100+100+250")
-	cline1=tk.Label(text=scaleUnits).pack()
+	cline1=tk.Label(control, text=scaleUnits).pack()
 	
 	cline3=tk.Scale(control,orient=tk.HORIZONTAL,length=580,width=20,sliderlength=10,from_=0,to=100,tickinterval=5, command=setVal)
 	cline3.set(50)

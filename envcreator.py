@@ -3,6 +3,7 @@
 ## in a playlist saved by this script ##########################################
 ################################################################################
 from Tkinter import Tk
+import Tkinter as tk
 from Tkinter import *
 from tkFileDialog import askopenfilename
 import tkFileDialog
@@ -13,30 +14,10 @@ import sliders
 
 from sys import argv
 
-def getScaleValue(scaleTitle, scaleUnits):
 
-	def setVal(val):
-		global outputVal
-		outputVal = val
-	
-	def endControl():
-		control.destroy()
-	##Tk().withdraw()
-	control=Tk()
-	control.withdraw()
-	control.protocol("WM_DELETE_WINDOW",endControl)
 
-	control.title(scaleTitle)
-	control.geometry("650x100+100+250")
-	cline1=Label(text=scaleUnits).pack()
-	
-	cline3=Scale(control,orient=HORIZONTAL,length=580,width=20,sliderlength=10,from_=0,to=100,tickinterval=5, command=setVal)
-	
-	cline3.set(50)
-	cline3.pack()
 
-	control.mainloop()
-	return outputVal
+
 
 
 def getListOfFiles(dialogPrompt):
@@ -57,24 +38,27 @@ def file_save(text2save):
 
 def addBackgroundTracksToCsv(outputCsv):
 	backgroundFiles = getListOfFiles('Choose background sounds')
-	backgroundVolume = sliders.getScaleValue('Background sounds volume', 'Volume')
+	##backgroundVolume = sliders.getScaleValue('Background sounds volume', 'Volume')
+	backgroundVolume = 30
 	for background in backgroundFiles:
 		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(background), backgroundVolume,'background')
 	print outputCsv
 
 def addShortSoundClipsToCsv(outputCsv):
 	shortSoundFiles = getListOfFiles('Choose background sounds (short)')	
-	shortSoundVolume = sliders.getScaleValue('Short background volume', 'Volume')
+	##shortSoundVolume = sliders.getScaleValue('Short background volume', 'Volume')
+	shortSoundVolume = 25
 	for short in shortSoundFiles:
 		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(short), shortSoundVolume,'short')	
 	print outputCsv
 
 def addMusicTrackToCsv(outputCsv):
-	print "Adding Music Track to csv: ", outputCsv
+	##print "Adding Music Track to csv: ", outputCsv
 	musicFiles = getListOfFiles('Choose background music')	
-	print "Selected files, ", musicFiles
+	##print "Selected files, ", musicFiles
 	##musicVolume = sliders.getScaleValue('Music volume', 'Volume')	
-	print "Adding line to outputCsv"
+	musicVolume = 55
+	##print "Adding line to outputCsv"
 	for music in musicFiles:
 		outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(music), 50,'music')	
 		##outputCsv[0] += "%s,%s,%s\n" % (ntpath.basename(music), musicVolume,'music')			
@@ -83,9 +67,9 @@ def addMusicTrackToCsv(outputCsv):
 if(__name__ == "__main__"):
 	outputCsv = ""
 	output = [outputCsv]
-	def fuckup(output):
-		output[0] = "foobar"
-		print outputCsv
+	
+	
+
 	
 	win = Tk()
 	
@@ -98,7 +82,6 @@ if(__name__ == "__main__"):
 			file_save(output[0])
 		
 
-		fuckup(output)
 		print "outputCsv: ", output[0]
 		exit()
 		
@@ -119,6 +102,10 @@ if(__name__ == "__main__"):
 		
 	win.mainloop()
 
+	root = tk.Tk()
+	main = MainWindow(root)
+	main.pack(side="top", fill="both", expand=True)
+	root.mainloop()
 
 def originalStuff():
 	outputCsv = ""

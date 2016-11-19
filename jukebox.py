@@ -119,7 +119,7 @@ class Jukebox(object):
 		
 	def resumeMusic(self):
 		self.musicPaused = False
-		self.musicChannel.play()
+		self.musicChannel.unpause()
 		
 	def togglePauseState(self):
 		if(self.isMusicPaused() == True):

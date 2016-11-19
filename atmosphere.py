@@ -73,6 +73,7 @@ if(__name__ == "__main__"):
 	clock.tick(10)
 	
 	
+	unpauseTriangle = [[10, 10], [25, 20],[ 10, 30]]
 	
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
@@ -81,6 +82,8 @@ if(__name__ == "__main__"):
 		pygame.draw.rect(screen,green,(225,(100-100*atmosphericJukebox.getMusicVolume()),50,10))
 		pygame.draw.rect(screen,blue,(300,(100-100*atmosphericJukebox.getShortSoundVolume()),50,10))
 		pygame.draw.rect(screen,red,(380,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
+		if(atmosphericJukebox.isMusicPaused() == True):
+			pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
 		for event in pygame.event.get():
 			
 			def isBetween(value, lower, upper):
@@ -88,9 +91,14 @@ if(__name__ == "__main__"):
 					return True
 				return False	
 				
-			
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				if event.button == 4:
+				if(event.button == 1):
+					if(atmosphericJukebox.isMusicPaused() == True):
+						if(isBetween(pygame.mouse.get_pos()[0], unpauseTriangle[0][0],unpauseTriangle[1][0])):
+							if(isBetween(pygame.mouse.get_pos()[1], unpauseTriangle[0][1],unpauseTriangle[2][1])):
+								## Yes this is a box, but it wont be too far off
+								atmosphericJukebox.togglePauseState()
+				elif(event.button == 4):
 					## scroll wheel up
 					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):
 						atmosphericJukebox.incrementBackgroundVolume(0.1)
@@ -100,7 +108,7 @@ if(__name__ == "__main__"):
 						atmosphericJukebox.incrementShortSoundVolume(0.1)
 					elif(isBetween(pygame.mouse.get_pos()[0], 380,400)):	
 						atmosphericJukebox.incrementMasterVolume(0.1)	
-				if event.button == 5:
+				if(event.button == 5):
 					## scroll wheel down
 					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):
 						atmosphericJukebox.incrementBackgroundVolume(-0.1)

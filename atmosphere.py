@@ -75,6 +75,12 @@ if(__name__ == "__main__"):
 	
 	unpauseTriangle = [[10, 10], [25, 20],[ 10, 30]]
 	
+	def getUnpauseTriangleBox(horizontalOffset=False):
+		if(not horizontalOffset):
+			return [[unpauseTriangle[0][0], unpauseTriangle[0][1]],[unpauseTriangle[1][0], unpauseTriangle[2][1]]]
+		else:
+			return [[unpauseTriangle[0][0]+horizontalOffset, unpauseTriangle[0][1]],[unpauseTriangle[1][0]+horizontalOffset, unpauseTriangle[2][1]]]
+	
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
 		pygame.draw.rect(screen,blue,(120,0,20,2.0*atmosphericJukebox.countdownToNextShortSound()))		
@@ -84,6 +90,9 @@ if(__name__ == "__main__"):
 		pygame.draw.rect(screen,red,(380,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
 		if(atmosphericJukebox.isMusicPaused() == True):
 			pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
+		else:
+			pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox()[0], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[0][1]], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[1][1]], [getUnpauseTriangleBox()[0][0], getUnpauseTriangleBox()[1][1]] ], 0)
+			pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox(10)[0], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[0][1]], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[1][1]], [getUnpauseTriangleBox(10)[0][0], getUnpauseTriangleBox(10)[1][1]] ], 0)
 		for event in pygame.event.get():
 			
 			def isBetween(value, lower, upper):
@@ -93,11 +102,11 @@ if(__name__ == "__main__"):
 				
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if(event.button == 1):
-					if(atmosphericJukebox.isMusicPaused() == True):
-						if(isBetween(pygame.mouse.get_pos()[0], unpauseTriangle[0][0],unpauseTriangle[1][0])):
-							if(isBetween(pygame.mouse.get_pos()[1], unpauseTriangle[0][1],unpauseTriangle[2][1])):
-								## Yes this is a box, but it wont be too far off
-								atmosphericJukebox.togglePauseState()
+					## left click
+					if(isBetween(pygame.mouse.get_pos()[0], unpauseTriangle[0][0],unpauseTriangle[1][0])):
+						if(isBetween(pygame.mouse.get_pos()[1], unpauseTriangle[0][1],unpauseTriangle[2][1])):
+							## Yes this is a box, but it wont be too far off
+							atmosphericJukebox.togglePauseState()
 				elif(event.button == 4):
 					## scroll wheel up
 					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):

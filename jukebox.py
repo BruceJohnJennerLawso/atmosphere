@@ -45,6 +45,8 @@ class Jukebox(object):
 		self.shortVolume = 1.0
 		self.musicVolume = 1.0
 		
+		self.musicPaused = False
+		
 		self.exitSignal = False
 		## indicator that we want to end the loop and get out of here
 		
@@ -67,6 +69,7 @@ class Jukebox(object):
 		
 		## once this is all done, the object is just waiting for
 		## play() to be called
+
 
 	def loadEnvFile(self, envFileName, debugInfo=False):
 
@@ -105,6 +108,24 @@ class Jukebox(object):
 			self.background1Channel.play(self.firstRandomChoice.getSound())	
 		if(not self.background2Channel.get_busy()):
 			self.background2Channel.play(self.secondRandomChoice.getSound())				
+
+
+	def isMusicPaused(self):
+		return self.musicPaused
+
+	def pauseMusic(self):
+		self.musicPaused = True
+		self.musicChannel.pause()
+		
+	def resumeMusic(self):
+		self.musicPaused = False
+		self.musicChannel.play()
+		
+	def togglePauseState(self):
+		if(self.isMusicPaused() == True):
+			self.resumeMusic()
+		else:
+			self.pauseMusic()
 
 	def nextMusicTrack(self, fadetime=False):
 		if(fadetime != False):
@@ -167,8 +188,10 @@ class Jukebox(object):
 		self.randomMusic = newRandomMusic
 		self.randomMusic.loadSound()
 		if(andPlay):
+			print "Playing track %s" % self.randomMusic.filePath
 			self.musicChannel.play(self.randomMusic.getSound())			
 			self.randomMusic.incrementPlayCounter()
+			
 			
 	def chooseRandomShortSound(self,andPlay=False):
 		newRandomShortSound = random.choice(self.shortSounds)
@@ -255,9 +278,10 @@ class Jukebox(object):
 
 					
 	def loop(self):
-		if(not self.musicChannel.get_busy()):
-			## music has finished, need to put another track on
+		if((not self.musicChannel.get_busy())and(self.isMusicPaused() == False)):
+			## music has finished, need to put another track on0
 			self.chooseRandomMusic(andPlay=True)
+			
 		if(not self.background1Channel.get_busy()):		
 			## background sound on channel 1 has finished,
 			## need to put another track on

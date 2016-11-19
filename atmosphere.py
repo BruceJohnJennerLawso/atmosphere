@@ -134,7 +134,11 @@ if(__name__ == "__main__"):
 				if(event.key == pygame.K_EQUALS):
 					atmosphericJukebox.incrementMasterVolume(0.1)	
 				if(event.key == pygame.K_MINUS):
-					atmosphericJukebox.incrementMasterVolume(-0.1)		
+					atmosphericJukebox.incrementMasterVolume(-0.1)	
+				if(event.key == pygame.K_SPACE):
+					atmosphericJukebox.togglePauseState()				
+				if(event.key == pygame.K_i):
+					print "Channel 1: %r, Channel 2: %r" % (atmosphericJukebox.background1Channel.get_busy(), atmosphericJukebox.background1Channel.get_busy())
 		
 		pygame.event.poll()
 		clock.tick(10)	

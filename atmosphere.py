@@ -55,7 +55,9 @@ if(__name__ == "__main__"):
 		
 	try:
 		if(debugInfo):
-			print envLoader.getFilesList(envFileName)
+			filesList = envLoader.getFilesList(envFileName)
+			for fileInfo in filesList:
+				print fileInfo
 		
 		atmosphericJukebox = jukebox.Jukebox(envFileName, debugInfo)
 	except TypeError:

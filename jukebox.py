@@ -73,8 +73,8 @@ class Jukebox(object):
 
 	def loadEnvFile(self, envFileName, debugInfo=False):
 
-		if(debugInfo):
-			print envLoader.getFilesList(envFileName)
+		##if(debugInfo):
+			##print envLoader.getFilesList(envFileName)
 	
 		for sFile in envLoader.getFilesList(envFileName):
 			decVolume = float(sFile[1]/100.0)

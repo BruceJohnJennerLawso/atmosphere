@@ -3,15 +3,22 @@
 ## of it and its massive ram hit ###############################################
 ################################################################################
 import pygame
-import envLoader
 
 
 class Sound(object):
+	
+	## take a basic list of properties a sound must have and store them in this
+	## object, 
+	## the filePath (where to load the sound from), 
+	## the volume adjustment (relative to blaring everything at full because not
+	## every track is at a similar volume level unfortunately),
+	## the soundType, one of ['music', 'short', 'background']
 	
 	def __init__(self, filePath, volume, soundType):
 		self.filePath = filePath
 		self.volume = volume
 		self.soundType = soundType
+		## 
 		self.playCount = 0
 		
 		self.pygameSound = []
@@ -51,35 +58,53 @@ class Sound(object):
 
 
 
+## test loads up all sounds available in an environment file and demo loading
+## them up as a sound object before discarding them again to demo the ability to
+## load and clear large chunks of memory
+
 if __name__ == '__main__':
 
+	import envLoader
+	## this is only required for our all up test of the sound loading/discard
+	## system, no need to weigh down the rest of the app with needless imports
 	
 	pygame.init()
-	
 	pygame.mixer.init()
 	
 	music = pygame.mixer.Channel(5)
-	
-	
-	##[('./data/swtor%i.ogg' % i) for i in range(1,40)]
+	## I believe this was related to playing simultaneous sounds (each channel
+	## can only wait for the sound playing before to finish, whereas the
+	## channels can play simultaneous)
 	
 	musics = []
-	for fileNm in envLoader.getFilesList('./envfiles/swtorHawk.csv'):
-		print "Loading music file %s" % fileNm[0]
-		##musics.append(pygame.mixer.Sound("./data/%s" % fileNm[0]))
-		musics.append(Sound("./data/%s" % fileNm[0], fileNm[1], fileNm[2]))		
+	for fileNm in envLoader.getFilesList('./envfiles/ebonHawk2.csv'):
+		fileName = fileNm[0]	
+		fileVolume = fileNm[1]
+		fileType = fileNm[2]
+		## one of ['music', 'short', 'background']
+		print "Loading music file %s" % fileName
+		filePath = "./data/%s" % fileName
+		musics.append(Sound(filePath, fileVolume, fileType))		
 
+	print "Filenames Loaded...\n"
 	raw_input("Press Enter to continue...")
-	print "loading music list"
+	## hold the app
+
+
+	print "loading music sound files to memory...\n"
 	for snd in musics:
 		snd.loadSound()
-
+	print "finished music sound files to memory\n"
 
 	raw_input("Press Enter to continue...")
-	print "flushing music list"
+
+	print "flushing music sound files from memory...\n"
 	for snd in musics:
 		snd.clearSound()
-	print musics
+		## drop each sound file out of memory so the huge chunk of memory
+		## consumed can be freed
+	##print musics
+	print "finished clearing music sound files from memory"
 	raw_input("Press Enter to continue...")
 	
 	

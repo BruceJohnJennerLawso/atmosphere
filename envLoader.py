@@ -5,6 +5,10 @@
 import csv
 
 
+## returns a list of lists, where the first three values of each sublist are the
+## filename (relative to the data folder), the volume, and the sound type
+## ('music', 'short', 'background')
+
 def getFilesList(environmentFileName):
 	output = []
 	

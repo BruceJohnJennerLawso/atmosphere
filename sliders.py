@@ -1,9 +1,10 @@
 ## sliders.py ##################################################################
 ## all manner of useful widgets to get yo sliding needs done ###################
+## looks like this was just a testbed I had for learning how the tkinter #######
+## sliders work ################################################################
 ################################################################################
 from Tkinter import Tk
 import Tkinter as tk
-##from Tkinter import *
 
 from sys import argv
 
@@ -27,7 +28,6 @@ def getScaleValue(scaleTitle, scaleUnits):
 	cline3=tk.Scale(control,orient=tk.HORIZONTAL,length=580,width=20,sliderlength=10,from_=0,to=100,tickinterval=5, command=setVal)
 	cline3.set(50)
 	cline3.pack()
-	##control.withdraw()
 	control.mainloop()
 	print "Slider widget outputting ", outputVal
 	return outputVal

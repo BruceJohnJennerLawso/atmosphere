@@ -29,7 +29,7 @@ if(__name__ == "__main__"):
 
 
 	Tk().withdraw()
-	## we don't want a full GUI, so keep the root window from appearing
+	## we dont want a full GUI, so keep the root window from appearing
 	filename = askopenfilename(initialdir='./envfiles')
 	## show an "Open" dialog box and return the path to the selected file
 	print(filename)
@@ -66,7 +66,7 @@ if(__name__ == "__main__"):
 			
 	if(debugInfo):
 		print "Received %i sounds" % len(envLoader.getFilesList(envFileName))
-		print "%i background tracks, %i short sounds, %i music tracks" % (len(atmosphericJukebox.sounds), len(atmosphericJukebox.shortSounds), len(atmosphericJukebox.musicSounds))
+		print "%i background tracks, %i short sounds, %i music tracks" % (len(atmosphericJukebox.backgroundSounds), len(atmosphericJukebox.shortSounds), len(atmosphericJukebox.musicSounds))
 	
 	atmosphericJukebox.play()
 	
@@ -86,9 +86,9 @@ if(__name__ == "__main__"):
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
 		pygame.draw.rect(screen,blue,(120,0,20,2.0*atmosphericJukebox.countdownToNextShortSound()))		
-		pygame.draw.rect(screen,blue,(150,(100-100*atmosphericJukebox.getBackgroundVolume()),50,10))
-		pygame.draw.rect(screen,green,(225,(100-100*atmosphericJukebox.getMusicVolume()),50,10))
-		pygame.draw.rect(screen,blue,(300,(100-100*atmosphericJukebox.getShortSoundVolume()),50,10))
+		pygame.draw.rect(screen,blue,(150,(100-100*atmosphericJukebox.getBackgroundChannelVolume()),50,10))
+		pygame.draw.rect(screen,green,(225,(100-100*atmosphericJukebox.getMusicChannelVolume()),50,10))
+		pygame.draw.rect(screen,blue,(300,(100-100*atmosphericJukebox.getShortSoundChannelVolume()),50,10))
 		pygame.draw.rect(screen,red,(380,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
 		if(atmosphericJukebox.isMusicPaused() == True):
 			pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
@@ -135,7 +135,7 @@ if(__name__ == "__main__"):
 				if event.key == pygame.K_LEFT:
 					pass
 				if event.key == pygame.K_RIGHT:
-					atmosphericJukebox.nextMusicTrack(1000)
+					atmosphericJukebox.fadeOutMusicTrack(1000)
 					## this is much simpler, just fadeout the current track,
 					## and the main loop will put on a new track
 				if(event.key == pygame.K_q):

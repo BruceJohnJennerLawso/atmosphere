@@ -525,7 +525,7 @@ class Jukebox(object):
 	## update the pygame output channels with the true output volume they should
 	## have based on whats stored in this object
 
-	def applyOutputChannelVolumes(self)
+	def applyOutputChannelVolumes(self):
 		self.background1Channel.set_volume(self.getBackgroundOutputVolume())
 		self.background2Channel.set_volume(self.getBackgroundOutputVolume())
 		self.shortSoundChannel.set_volume(self.getShortSoundOutputVolume())

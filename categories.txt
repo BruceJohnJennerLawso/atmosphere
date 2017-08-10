@@ -1,0 +1,235 @@
+00000 - misc vehicle
+00001-00025 - misc nature
+00026-00035 - distant screams
+00036-00040 - fly buzzing
+00041-00090 - distant animal sounds (Korriban/Kashyyk?)
+00091 - misc mechanical sound
+00092 - alarm
+00093-00100 - ebon hawk sounds
+00101-00106 - misc mechanical sounds (other)
+00107-00139 - ebon hawk sounds
+00140-00144 - misc mechanical sounds (other)
+00145-00154 - birdsong
+00155-00164 - crumbling brick building or rock
+00165-00166 - chains rattling (mechanical)
+00167-00170 - misc electronic (radar?)
+00171 - speeder passing
+00172-00174 - droids beeping
+00175-00179 - machine operation - grinding (doors opening?)
+00180-00183 - misc mechanical/electronic
+00184-00221 - taris sewers ambient noise
+00222-00239 - speeders/ships passing
+00240-00244 - water dripping
+00245-00259 - wind noise
+00260-00269 - waves crashing?
+00271-00275 - bricks crumbling
+00276-00305 - distant wildlife calls (likely Kashyyk)
+00306-00315 - underwater sounds (Manaan depths)
+00316 - distant howl
+00317-00320 - rumpling? Very hard to tell
+00321 - whine/moan distant
+00322 - rumpling
+00323-00325 - howl/whine low
+00326-00330 - wind noise
+00331-00340 - dripping water
+00341-00342 - fire burning?
+00343-00345 - low pitch low volume rumble
+00346 bang/explosion distant
+00347 - low pitch low volume rumble
+00348-00357 - glasses clinking, liquid pouring (cantina)
+00358-00363 - distant ventilation system, low rumble machinery
+
+00387-00406 - Ghosts moaning
+00407-00438 - Alien ads & conversation
+00439-00443 - Screams
+00444-00483 - Muffled/Distorted speech, laughter, sometimes alien
+00484-00498 - Radio transmission speech
+00499-00514 - More speech snippets, some english
+00515-00519 - animal roars (Maybe wookie speak?)
+
+00523-00537 - digital radio transmissions (probot sound?)
+00538-00542 - Tusken Raider Noises
+00543-00552 - Cries of pain
+00553-00562 - Oddly distorted speech (whispered?)
+00563-00567 - More alien speech (More exotic sounding)
+00568-00578 - Muffled conversations
+00579-00580 - Creaking/Banging noises (maybe chairs being moved, banged)
+00581-00593 - More muffled conversations, louder, more confident, more general people gathering sounds, walking, talking, moving furniture
+00594-00605 - Impact sounds, slight explosions, things landing in mud, water
+00606-00613 - Growls, very likely wookie/animal sounds
+00614-00618 - Very different sounding animal, not even sure what this one is, very guttural, wet sounds
+00619-00624 - Not even sure, maybe a high pitched animal, or a droid?
+00625-00631 - Definitely droid sounds
+00632-00646 - Some odd sounding animal growls, maybe a weird droid?
+00647-00656 - Droid/Panel Noises mostly beeps
+00657-00661 - Droid Squeals
+00662-00663 - Other droid dying noises
+00664 - Odd low pitched speech (again, maybe droid noises)
+00665-00667 - More droids dying
+00668-00672 - Wet animal noises growling
+00673-00681 - Gammorean squeals
+00682-00690 - Quarren Sounds
+00691-00695 - Squealing animal/alien noises
+00696-00703 - Animal growls & general noises
+00704-00715 - Definitely kath hounds
+00716-00731 - Kinrath sounds
+00732-00752 - More animal growls & noises
+00753-00758 - Tiny squealy monkey animal sounds (Tachs from Kasshyk?)
+00758-00763 - congested growls from a big animal
+00764-00773 - Hound like growls & assorted noises
+00774-00777 Slobbery, yet oddly high pitched sounding animal
+00778-00787 Really loud, high pitched squealy animal
+00788-00792 - Destroyed/broken electrical equipment, smashing metal, glass
+00793-00796 - Short bangs/thuds
+00797-00806 - Mine Explosions, gas mines erupting
+00807-00813 - Punches, hits, bangs, thuds, metal clanging (swords hitting one another)
+00814-00820 - Blaster shots
+00821-00827 - Punches, hits, bangs, thuds
+00828-00841 - More blaster shots
+00842-00848  - Punches, hits, bangs, thuds
+00849-00865 - Lightsaber noises
+00866 - More metal clanging sword noises
+00867 - Lightsaber noises
+00868 - More metal clanging sword noises
+00869 - Lightsaber noises
+00870 - Punches, hits, bangs, thuds
+00871-00872 - Blaster shots
+00873-00875 - swinging miss (punches, swords)
+00876-00877 - Cries of pain
+
+00881-00883 - assorted droid noises
+00884 - Thunderous Applause
+00885 - Screams
+00886 - Walking noises on metal floor in boots
+00887-00888 - Sounds of nature (Kasshyk)
+00889 - High pitched flat beep
+00890 - Swing and a miss
+00891 - Lightsaber ignition sound
+00892 - Metallic/plastic sounds
+00893 - Man screaming
+00894-00898 - Metal distantly grinding
+
+00900-00901 - Broken technology, sparks flying
+00902-00903 - Angry large animal growls/snarls
+00904-00907 - Abstract Computer noises
+00908 - distant muffled noises
+00909 - Crowd booing
+00910 - Crowd clapping and cheering
+00911-00912 - Metal scraping sounds
+00913 - animal growling sounds
+00914 - Kazoo or beeping sound
+00915-00917 - Wookie sounds
+00918-00965 - Machinery sounds, some excellent console sounds in here
+00967-00979 - Doors opening/closing
+00980-00981 - Machinery startup shutdown, maybe elevators
+00982-00989 - Doors opening/closing, various machine sounds mixed in here possibly
+00990-00992 - Banging on doors
+00993-00994 - General machinery sounds
+00995-01000 - Crunching impacts (possibly footsteps in sand, gravel, )
+01001-01003 - Light clicking noise, maybe muffled footstep, drink being set down, etc.
+01004 - More indistinct crunching noises
+01005 - Vague whoosh
+01006 - Radarey sound
+01007-01012 - Crunching footstep sounds
+01013-01015 - More footsteps, on ceramic floor/pavement
+01016-01021 - Short crashing bang against metal, plastic
+01022-01024 - Metal clanking noises (could be spacesuit footsteps)
+01025-01030 - Walking on metal
+01031-01034 - Footsteps in puddle of water
+01035-01036 - More footsteps in crunchy material (sounds like sand, snow)
+01037-01039 - Sliding something along floor (heavy bag or box?)
+01040-01042 - Heavy banging noises, harder than footsteps or knocking, distant
+01043-01048 - banging on dull metal, tray of something
+01049-01051 - Clicks, probably weapons loading
+01052-01057 - More general footsteps, like on wood
+01058-01060 - Splash in puddle, maybe footstep
+01061 - T3M4 driving forward
+01062-01065 - pairs of electronics going down and coming back up again
+01066-01078 - Computer chimes & clicks from button presses, ie "ebon hawk os" sounds
+01079 - Level up sound
+01080 - Sound when droid is repaired with parts kit
+01081-01086 - more computer UI sounds
+01087 - Sound when droid is repaired with parts kit
+01088 - generic click sound
+01089-01090 - speeder/swoop racing sounds
+01091 - short background loop for technical room, air conditioning, some technical stuff
+01092 - Swoop racing boost sound
+
+01094 - Clicking selection
+01095-01096 - speeder/swoop racing sounds
+01097-01106 - looped various sounds of machine rooms, factory floor type environment
+01107 - howl sound from Phantom menace pod racing
+01108-01109 - Outgassing whoosh
+01110-01112 - More looped machinery environment sounds
+01113 - Pazaak losing sound
+01114 - other pazaak sound
+01115-0116 - more looped machinery noises
+01117 - Other pazaak sound
+01118-0119 - Heavy Machinery transition sounds
+
+01122 - Beeping button press
+01123 -01127 - More swoop/speeder noises gunning
+01128-01132 - Good fucking question, some windy ethereal sounds, big and loud
+01134-01136 - Generic explosion/crashes
+01137 - repeating blaster sound
+01138-01141 - distant explosion/crash sound
+01142-01145 - Speeder traffic going by
+01146 - Pazaak card draw sound
+01147 - looped ambient airflow/machinery sounds
+01148 - vehicle setting down
+01149 - other vehicle/spaceship noise
+01150 - more pazaak sounds
+01151 - short windy loop
+01152 - Pazaak win sound
+01153 - Pazaak sounds
+01791-01818 - Wookie noises
+01819-01827 - difficult to categorize clicking whooshing noises, used in Jedi Knight as well
+01828 - looting body sounds
+01830-01832 - difficult to categorize clicking whooshing noises, used in Jedi Knight as well
+01833 - buzzer noise
+01834-01835 - cabinet opening noises
+01836 - Gong noise
+
+01838 - distant blaster shot
+01839 - Another gong noise
+01840-01849 - doors/compartments opening
+01850 - short beep alert
+01851-01855 - doors/compartments opening
+01856-01857 - cranking switch sound with slight sewers feel
+01858-01861 - doors/compartments opening
+01862 - rock/ceramic crumbling
+01863-01866 - electrical mechanical sounds, last two are long sequences, but likely not loops
+01867 - outgassing
+01868-01871 - stone door/jar pushed open
+
+01873-01874 - some weird tech squeal
+01875-01877 - more complex clicks into place
+01878-01881 - staticy environment loops
+01882 - air flow environment loop
+01883-01884 - whining electronics environment loop
+01885-01886 - single crash/smash sounds
+01887-01888 - either fire crackling or gnawing on remains
+01889 - decloaking sound
+01890 - looped nature forest sounds
+01891 - looped tech environment background
+01892 - looped mitre saw background
+01893 - looped tech environment background
+01894-01896 - tech transition sounds
+01897 - choking sounds (force choke)
+
+
+01900 - fires starting?
+01901-01903 - very clean tech transition sounds
+
+01905 - force protection sound
+01906 - one of the force powers going down, cant remember which one
+
+
+01908 - another force power use sound
+01909 - going up sound
+01910-01914 - assorted force power sounds, maybe push and pull in there
+01915 - Electronics shorting out & dying
+01916 - force power going up
+01917 - force power going up
+01918 - force power going up
+01919 - something getting wrecked

@@ -14,11 +14,18 @@ import sound
 import envLoader
 import jukebox
 
+import time
+import re
+
 def getFillColour(currentFillGreen, loadFinished):
 	if(loadFinished):
 		if(currentFillGreen > 0):
 			currentFillGreen -= 1
 
+
+def getShutdownDelayFromArgString(argString):
+	m = re.search('(?<=--shutdownTime=)\w+', argString)
+	return int(m.group(0))
 
 if(__name__ == "__main__"):
 	
@@ -27,6 +34,13 @@ if(__name__ == "__main__"):
 	green=(0,200,120)
 	red=(170,0,0)
 
+	timedShutdown = False
+	
+	try:
+		shutdownDelay = getShutdownDelayFromArgString(argv[1])
+		timedShutdown = True
+	except:
+		timedShutdown = False
 
 	Tk().withdraw()
 	## we dont want a full GUI, so keep the root window from appearing
@@ -68,6 +82,7 @@ if(__name__ == "__main__"):
 		print "Received %i sounds" % len(envLoader.getFilesList(envFileName))
 		print "%i background tracks, %i short sounds, %i music tracks" % (len(atmosphericJukebox.backgroundSounds), len(atmosphericJukebox.shortSounds), len(atmosphericJukebox.musicSounds))
 	
+	startupTime = time.time()
 	atmosphericJukebox.play()
 	
 		
@@ -162,5 +177,11 @@ if(__name__ == "__main__"):
 		pygame.event.poll()
 		clock.tick(10)	
 		atmosphericJukebox.loop()
+		if(timedShutdown):
+			currentRuntime = time.time() - startupTime
+			if(currentRuntime >= shutdownDelay):
+				atmosphericJukebox.exitSignal = True		
 		pygame.display.update()
+	if(timedShutdown):
+		print "Successfully exited after %i seconds, target %i s" % ((time.time()-startupTime), shutdownDelay)	
 

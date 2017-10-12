@@ -28,7 +28,7 @@ def getShutdownDelayFromArgString(argString):
 	return int(m.group(0))
 
 def getEnvFileFromArgString(argString):
-	m = re.search('(?<=--envFile=)\w+\.(csv|env|txt)', argString)
+	m = re.search('(?<=--envFile=)\w+\.(csv|env)', argString)
 	return str(m.group(0))
 
 if(__name__ == "__main__"):

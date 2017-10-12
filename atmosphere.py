@@ -48,6 +48,9 @@ if(__name__ == "__main__"):
 	
 	manualArguments = argv[1:]
 	
+	if("options" in manualArguments):
+		print "--shutdownTime=\n--envFile=\n"
+	
 	for arg in manualArguments:
 		try:
 			shutdownDelay = getShutdownDelayFromArgString(arg)
@@ -71,6 +74,7 @@ if(__name__ == "__main__"):
 		except:
 			envFilePreselected = False
 			## otherwise just do nothing
+
 
 	Tk().withdraw()
 	## we dont want a full GUI, so keep the root window from appearing

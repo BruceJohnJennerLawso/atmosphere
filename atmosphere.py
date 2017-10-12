@@ -89,7 +89,7 @@ if(__name__ == "__main__"):
 		envFileName = preselectedEnvFileName
 	
 	
-	print(filename)
+	print(envFileName)
 	
 	version = 0.1
 	debugInfo = True

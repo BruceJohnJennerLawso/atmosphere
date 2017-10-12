@@ -27,10 +27,113 @@ def getShutdownDelayFromArgString(argString):
 	m = re.search('(?<=--shutdownTime=)\w+', argString)
 	return int(m.group(0))
 
+def getIntegerValueFromArgString(argString, targetFlagString):
+	m = re.search('(?<=%s=)\w+' % targetFlagString, argString)
+	return int(m.group(0))
+
 def getEnvFileFromArgString(argString):
 	m = re.search('(?<=--envFile=)\w+\.(csv|env)', argString)
 	return str(m.group(0))
 
+## foldFileExtensionsIntoString: Listof(Str) -> Str
+
+def foldFileExtensionsIntoString(fileExtensionList):
+	output = ""
+	for ext in fileExtensionList:
+		if(output != ""):
+			output += "|"
+		output += ext
+	return output
+		
+
+def getFilenameFromArgString(argString, targetFlagString, availableFileExtensions):
+	##m = re.search('(?<=%s=)\w+\.(csv|env)', argString)
+	m = re.search('(?<=%s=)\w+\.(%s)' % (targetFlagString, foldFileExtensionsIntoString(availableFileExtensions)), argString)
+	return str(m.group(0))
+
+def stringToBoolean(someStr):
+	if(someStr.lower() in ["true", "yes", "yea", "1"]):
+		return True
+	elif(someStr.lower() in ["false", "no", "nah", "0"]):
+		return False
+	else:
+		return None
+		## lets get explicit about sending everything to hell
+
+
+def getBooleanSwitchOptionFromArgString(argString, targetFlagString):
+	m = re.search('(?<=%s=)\w+' % targetFlagString , argString)
+	return m.group(0)
+
+
+
+def searchForIntegerArgument(manualArguments, targetFlagString):
+	argumentFound = False
+	integerValue = -1
+	for arg in manualArguments:
+		try:
+			##shutdownDelay = getShutdownDelayFromArgString(arg)
+			integerValue = getIntegerValueFromArgString(arg, targetFlagString)
+			## take a shot at pulling an int off the end of some argument string
+			## formatted in just the right way
+			argumentFound = True
+			break
+			## once its found, pop out of the loop and flag that we have one set
+		except:
+			argumentFound = False
+			## otherwise just do nothing
+	return integerValue, argumentFound
+
+
+	
+
+def searchForFilenameArgument(manualArguments, targetFlagString, availableFileExtensions):
+	argumentFound = False
+	filenameOutput = ""
+	for arg in manualArguments:
+		try:
+			##shutdownDelay = getShutdownDelayFromArgString(arg)
+			##integerValue = getIntegerValueFromArgString(arg, targetFlagString)
+			filenameOutput = getFilenameFromArgString(arg, targetFlagString, availableFileExtensions)
+			## take a shot at pulling an int off the end of some argument string
+			## formatted in just the right way
+			argumentFound = True
+			break
+			## once its found, pop out of the loop and flag that we have one set
+		except:
+			argumentFound = False
+			## otherwise just do nothing
+	return filenameOutput, argumentFound
+	
+	
+	
+def searchForBooleanArgument(manualArguments, targetFlagString):
+	argumentFound = False
+	booleanOutput = False
+	for arg in manualArguments:
+		try:
+			##shutdownDelay = getShutdownDelayFromArgString(arg)
+			##integerValue = getIntegerValueFromArgString(arg, targetFlagString)
+			rawBooleanString = getBooleanSwitchOptionFromArgString(arg, targetFlagString)
+			print rawBooleanString
+			## take a shot at pulling an int off the end of some argument string
+			## formatted in just the right way
+			if(stringToBoolean(rawBooleanString) != None):
+				print "'%s' has a booelean argument %r as '%s'" % (arg, stringToBoolean(rawBooleanString), rawBooleanString)
+				booleanOutput = stringToBoolean(rawBooleanString)
+				argumentFound = True
+				break
+			else:
+				print "'%s' does not have a booelean argument" % (arg)
+				argumentFound = False
+			## once its found, pop out of the loop and flag that we have one set
+		except:
+			argumentFound = False
+			## otherwise just do nothing
+	return booleanOutput, argumentFound	
+
+	
+	
 if(__name__ == "__main__"):
 	
 	
@@ -44,37 +147,34 @@ if(__name__ == "__main__"):
 	## flag for whether we have a countdown to the app killing itself after some
 	## number of seconds
 	envFilePreselected = False
+
+
+	musicStartStateSpecified = False
+	startWithMusicPaused = False
 	
 	
 	manualArguments = argv[1:]
 	
-	if("options" in manualArguments):
-		print "--shutdownTime=\n--envFile=\n"
+	if(manualArguments == ["options"]):
+		print "--shutdownTime=\n--envFile=\n--startWithMusicPaused=\n"
 		exit()
-	
-	for arg in manualArguments:
-		try:
-			shutdownDelay = getShutdownDelayFromArgString(arg)
-			## take a shot at pulling an int off the end of some argument string
-			## formatted in just the right way
-			timedShutdown = True
-			break
-			## once its found, pop out of the loop and flag that we have one set
-		except:
-			timedShutdown = False
-			## otherwise just do nothing
+	elif(manualArguments == ["tests"]):
+		for op in ["yea", "Yea", "Nope", "NAH", "True", "FALSE", "true", "False"]:
+			print repr(op), " -> ", repr(stringToBoolean(op))
+		valueFound, wasFoundFlag = searchForBooleanArgument(["--shutdownTime=nah"], "--shutdownTime")
+		print "wasFoundFlag ", repr(wasFoundFlag)
+		print "valueFound ", repr(valueFound)
+		exit()
+		
+	shutdownDelay, timedShutdown = searchForIntegerArgument(manualArguments, "--shutdownTime")
+	preselectedEnvFileName, envFilePreselected = searchForFilenameArgument(manualArguments, "--envFile", ['csv', 'env'])
+	startWithMusicPaused, musicStartStateSpecified = searchForBooleanArgument(manualArguments, "--startWithMusicPaused")	
 
-	for arg in manualArguments:
-		try:
-			preselectedEnvFileName = getEnvFileFromArgString(arg)
-			## take a shot at pulling an int off the end of some argument string
-			## formatted in just the right way
-			envFilePreselected = True
-			break
-			## once its found, pop out of the loop and flag that we have one set
-		except:
-			envFilePreselected = False
-			## otherwise just do nothing
+
+
+	
+	
+
 
 
 	Tk().withdraw()
@@ -127,6 +227,11 @@ if(__name__ == "__main__"):
 	startupTime = time.time()
 	atmosphericJukebox.play()
 	
+	print "musicStartStateSpecified = ", musicStartStateSpecified
+	print "envFilePreselected = ", envFilePreselected
+	print "timedShutdown = ", timedShutdown
+	if(musicStartStateSpecified and startWithMusicPaused):
+		atmosphericJukebox.togglePauseState()	
 		
 	clock = pygame.time.Clock()
 	clock.tick(10)
@@ -225,5 +330,5 @@ if(__name__ == "__main__"):
 				atmosphericJukebox.exitSignal = True		
 		pygame.display.update()
 	if(timedShutdown):
-		print "Successfully exited after %i seconds, target %i s" % ((time.time()-startupTime), shutdownDelay)	
+		print "Successfully exited after %i seconds, targeted shutdown was set for %i s" % ((time.time()-startupTime), shutdownDelay)	
 

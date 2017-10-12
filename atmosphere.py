@@ -27,27 +27,64 @@ def getShutdownDelayFromArgString(argString):
 	m = re.search('(?<=--shutdownTime=)\w+', argString)
 	return int(m.group(0))
 
+def getEnvFileFromArgString(argString):
+	m = re.search('(?<=--envFile=)\w+', argString)
+	return str(m.group(0))
+
 if(__name__ == "__main__"):
 	
 	
 	blue=(0,0,255)
 	green=(0,200,120)
 	red=(170,0,0)
+	## define our coloury shit
 
-	timedShutdown = False
 	
-	try:
-		shutdownDelay = getShutdownDelayFromArgString(argv[1])
-		timedShutdown = True
-	except:
-		timedShutdown = False
+	timedShutdown = False
+	## flag for whether we have a countdown to the app killing itself after some
+	## number of seconds
+	envFilePreselected = False
+	
+	
+	manualArguments = argv[1:]
+	
+	for arg in manualArguments:
+		try:
+			shutdownDelay = getShutdownDelayFromArgString(arg)
+			## take a shot at pulling an int off the end of some argument string
+			## formatted in just the right way
+			timedShutdown = True
+			break
+			## once its found, pop out of the loop and flag that we have one set
+		except:
+			timedShutdown = False
+			## otherwise just do nothing
+
+	for arg in manualArguments:
+		try:
+			preselectedEnvFileName = getEnvFileFromArgString(arg)
+			## take a shot at pulling an int off the end of some argument string
+			## formatted in just the right way
+			envFilePreselected = True
+			break
+			## once its found, pop out of the loop and flag that we have one set
+		except:
+			envFilePreselected = False
+			## otherwise just do nothing
 
 	Tk().withdraw()
 	## we dont want a full GUI, so keep the root window from appearing
-	filename = askopenfilename(initialdir='./envfiles')
-	## show an "Open" dialog box and return the path to the selected file
+	
+	
+	if(not envFilePreselected):
+		filename = askopenfilename(initialdir='./envfiles')
+		## show an "Open" dialog box and return the path to the selected file
+		envFileName = filename
+	else:
+		envFileName = preselectedEnvFileName
+	
+	
 	print(filename)
-	envFileName = filename
 	
 	version = 0.1
 	debugInfo = True

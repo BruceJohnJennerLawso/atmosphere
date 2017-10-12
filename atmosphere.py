@@ -86,7 +86,7 @@ if(__name__ == "__main__"):
 		## show an "Open" dialog box and return the path to the selected file
 		envFileName = filename
 	else:
-		envFileName = preselectedEnvFileName
+		envFileName = "./envfiles/%s" % preselectedEnvFileName
 	
 	
 	print(envFileName)

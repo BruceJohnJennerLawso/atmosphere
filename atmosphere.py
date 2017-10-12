@@ -50,6 +50,7 @@ if(__name__ == "__main__"):
 	
 	if("options" in manualArguments):
 		print "--shutdownTime=\n--envFile=\n"
+		exit()
 	
 	for arg in manualArguments:
 		try:

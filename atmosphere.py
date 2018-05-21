@@ -170,13 +170,6 @@ if(__name__ == "__main__"):
 	preselectedEnvFileName, envFilePreselected = searchForFilenameArgument(manualArguments, "--envFile", ['csv', 'env'])
 	startWithMusicPaused, musicStartStateSpecified = searchForBooleanArgument(manualArguments, "--startWithMusicPaused")	
 
-
-
-	
-	
-
-
-
 	Tk().withdraw()
 	## we dont want a full GUI, so keep the root window from appearing
 	
@@ -247,16 +240,40 @@ if(__name__ == "__main__"):
 	
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
-		pygame.draw.rect(screen,blue,(120,0,20,2.0*atmosphericJukebox.countdownToNextShortSound()))		
-		pygame.draw.rect(screen,blue,(150,(100-100*atmosphericJukebox.getBackgroundChannelVolume()),50,10))
-		pygame.draw.rect(screen,green,(225,(100-100*atmosphericJukebox.getMusicChannelVolume()),50,10))
-		pygame.draw.rect(screen,blue,(300,(100-100*atmosphericJukebox.getShortSoundChannelVolume()),50,10))
-		pygame.draw.rect(screen,red,(380,(100-100*atmosphericJukebox.getMasterVolume()),20,10))		
+		
+		countdownUiHeight = 2.0*atmosphericJukebox.countdownToNextShortSound()
+		pygame.draw.rect(screen,blue,(120,0,20,countdownUiHeight))	
+		## render the countdown timer as a rectangle wiping upwards as the time
+		## to the next short sound being played hits zero
+		
+		
+		
+		backgroundChannelVolumeUi = (100-100*atmosphericJukebox.getBackgroundChannelVolume())
+		pygame.draw.rect(screen,blue,(150,backgroundChannelVolumeUi,50,10))
+		
+		musicChannelVolumeUi = (100-100*atmosphericJukebox.getMusicChannelVolume())
+		pygame.draw.rect(screen,green,(225,musicChannelVolumeUi,50,10))
+		
+		shortSoundChannelVolumeUi = (100-100*atmosphericJukebox.getShortSoundChannelVolume())
+		pygame.draw.rect(screen,blue,(300,shortSoundChannelVolumeUi,50,10))
+		
+		masterVolumeUi = (100-100*atmosphericJukebox.getMasterVolume())
+		pygame.draw.rect(screen,red,(380,masterVolumeUi,20,10))		
+		
+		## render the four volume sliders for the app, positioned on the canvas
+		## depending on volume, 100% at the top, 0% at the bottom
+		
+		
 		if(atmosphericJukebox.isMusicPaused() == True):
 			pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
+			## draw a play symbol that the user can click to start playing the
+			## music
+		
 		else:
 			pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox()[0], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[0][1]], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[1][1]], [getUnpauseTriangleBox()[0][0], getUnpauseTriangleBox()[1][1]] ], 0)
 			pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox(10)[0], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[0][1]], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[1][1]], [getUnpauseTriangleBox(10)[0][0], getUnpauseTriangleBox(10)[1][1]] ], 0)
+			## draw a pause symbol that the user can click to pause the music
+			
 		for event in pygame.event.get():
 			
 			def isBetween(value, lower, upper):

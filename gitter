@@ -1,5 +1,5 @@
 #!/bin/bash
 
-geany sliders.py envLoader.py sound.py jukebox.py atmosphere.py envcreator.py ./envfiles/* gitter &
+geany sliders.py envLoader.py sound.py jukebox.py uiTools.py atmosphere.py envcreator.py ./envfiles/* gitter &
 
 exit 0

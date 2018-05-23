@@ -158,6 +158,7 @@ if(__name__ == "__main__"):
 	if(manualArguments == ["options"]):
 		print "--shutdownTime=\n--envFile=\n--startWithMusicPaused=\n"
 		exit()
+		## print the basic command line options for this 
 	elif(manualArguments == ["tests"]):
 		for op in ["yea", "Yea", "Nope", "NAH", "True", "FALSE", "true", "False"]:
 			print repr(op), " -> ", repr(stringToBoolean(op))

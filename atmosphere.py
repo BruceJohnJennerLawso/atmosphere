@@ -17,6 +17,8 @@ import jukebox
 import time
 import re
 
+import uiTools
+
 def getFillColour(currentFillGreen, loadFinished):
 	if(loadFinished):
 		if(currentFillGreen > 0):
@@ -132,6 +134,11 @@ def searchForBooleanArgument(manualArguments, targetFlagString):
 			## otherwise just do nothing
 	return booleanOutput, argumentFound	
 
+def getUnpauseTriangleBox(horizontalOffset=False):
+	if(not horizontalOffset):
+		return [[unpauseTriangle[0][0], unpauseTriangle[0][1]],[unpauseTriangle[1][0], unpauseTriangle[2][1]]]
+	else:
+		return [[unpauseTriangle[0][0]+horizontalOffset, unpauseTriangle[0][1]],[unpauseTriangle[1][0]+horizontalOffset, unpauseTriangle[2][1]]]
 	
 	
 if(__name__ == "__main__"):
@@ -170,9 +177,15 @@ if(__name__ == "__main__"):
 	shutdownDelay, timedShutdown = searchForIntegerArgument(manualArguments, "--shutdownTime")
 	preselectedEnvFileName, envFilePreselected = searchForFilenameArgument(manualArguments, "--envFile", ['csv', 'env'])
 	startWithMusicPaused, musicStartStateSpecified = searchForBooleanArgument(manualArguments, "--startWithMusicPaused")	
+	## retrieve any and all command line arguments
+
+
+
+
 
 	Tk().withdraw()
-	## we dont want a full GUI, so keep the root window from appearing
+	## we dont want a full GUI through TkInter, so keep the root window from 
+	## appearing (main gui here will be done through pygame
 	
 	
 	if(not envFilePreselected):
@@ -181,35 +194,55 @@ if(__name__ == "__main__"):
 		envFileName = filename
 	else:
 		envFileName = "./envfiles/%s" % preselectedEnvFileName
-	
-	
+	## determine which envfile should be loaded and store it as a string under
+	## envFileName
 	print(envFileName)
 	
-	version = 0.1
+	
+	version = 0.20
+	## program version
+	##
+	## version history goes like this:
+	## 0.0x basic testing to figure out how to make the app workable
+	## 0.1x was the first stable version, developed around late 2016, early 2017
+	## and used as a good copy for about a year
+	## 0.2x is the new and improved version which will see the code get
+	## commented and refactored to a much cleaner level, and the memory usage
+	## reduced significantly
+	## 0.3x will be a complete overhaul of what the app does, finally adding
+	## support for simulated objects under the hood, such as moving people,
+	## doors, and other spatial related upgrades
+	
+	
 	debugInfo = True
+	## by default show debug output
 	
 	
 	pygame.init()
-	
 	pygame.mixer.init()
-	
+	## pygame setup
 	
 	screen = pygame.display.set_mode((440,120))
+	## define a basic window size of 120 high, 440 wide
 	pygame.display.set_caption("atmosphere %s" % version)
-	
-	##screen.fill((0,200,0))
 	
 	
 	pygame.mixer.pre_init(44100, -16, 2, 2048)
+	## need to look up what this actually meant
 	pygame.mixer.init()
+	## also why is mixer.init() called twice...
 		
 	try:
 		if(debugInfo):
 			filesList = envLoader.getFilesList(envFileName)
+			## get a list of audio files to be used
+			## returns a 2-list, contains length 3 lists with info about each
+			## file
 			for fileInfo in filesList:
 				print fileInfo
 		
 		atmosphericJukebox = jukebox.Jukebox(envFileName, debugInfo)
+		## object wrapping all of the loaded sound files and their behaviour
 	except TypeError:
 		print "No env file selected, exiting..."
 		exit()
@@ -221,23 +254,23 @@ if(__name__ == "__main__"):
 	startupTime = time.time()
 	atmosphericJukebox.play()
 	
-	print "musicStartStateSpecified = ", musicStartStateSpecified
-	print "envFilePreselected = ", envFilePreselected
-	print "timedShutdown = ", timedShutdown
+	
+	if(debugInfo):
+		print "musicStartStateSpecified = ", musicStartStateSpecified
+		print "envFilePreselected = ", envFilePreselected
+		print "timedShutdown = ", timedShutdown
 	if(musicStartStateSpecified and startWithMusicPaused):
 		atmosphericJukebox.togglePauseState()	
-		
+		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, False)
+	else:
+		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, True)	
 	clock = pygame.time.Clock()
 	clock.tick(10)
 	
 	
-	unpauseTriangle = [[10, 10], [25, 20],[ 10, 30]]
-	
-	def getUnpauseTriangleBox(horizontalOffset=False):
-		if(not horizontalOffset):
-			return [[unpauseTriangle[0][0], unpauseTriangle[0][1]],[unpauseTriangle[1][0], unpauseTriangle[2][1]]]
-		else:
-			return [[unpauseTriangle[0][0]+horizontalOffset, unpauseTriangle[0][1]],[unpauseTriangle[1][0]+horizontalOffset, unpauseTriangle[2][1]]]
+	##unpauseTriangle = [[10, 10], [25, 20],[ 10, 30]]
+	## [x, y] coordinates, y is measured downwards from top of window
+	## x is measured across from left hand side of window
 	
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
@@ -265,15 +298,17 @@ if(__name__ == "__main__"):
 		## depending on volume, 100% at the top, 0% at the bottom
 		
 		
-		if(atmosphericJukebox.isMusicPaused() == True):
-			pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
+		##if(atmosphericJukebox.isMusicPaused() == True):
+		##	pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
 			## draw a play symbol that the user can click to start playing the
 			## music
 		
-		else:
-			pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox()[0], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[0][1]], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[1][1]], [getUnpauseTriangleBox()[0][0], getUnpauseTriangleBox()[1][1]] ], 0)
-			pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox(10)[0], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[0][1]], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[1][1]], [getUnpauseTriangleBox(10)[0][0], getUnpauseTriangleBox(10)[1][1]] ], 0)
+		##else:
+		##	pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox()[0], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[0][1]], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[1][1]], [getUnpauseTriangleBox()[0][0], getUnpauseTriangleBox()[1][1]] ], 0)
+		##	pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox(10)[0], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[0][1]], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[1][1]], [getUnpauseTriangleBox(10)[0][0], getUnpauseTriangleBox(10)[1][1]] ], 0)
 			## draw a pause symbol that the user can click to pause the music
+			
+		musicPausePlayButton.renderButton(screen)	
 			
 		for event in pygame.event.get():
 			
@@ -285,10 +320,14 @@ if(__name__ == "__main__"):
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if(event.button == 1):
 					## left click
-					if(isBetween(pygame.mouse.get_pos()[0], unpauseTriangle[0][0],unpauseTriangle[1][0])):
-						if(isBetween(pygame.mouse.get_pos()[1], unpauseTriangle[0][1],unpauseTriangle[2][1])):
+					##if(isBetween(pygame.mouse.get_pos()[0], unpauseTriangle[0][0],unpauseTriangle[1][0])):
+					##	if(isBetween(pygame.mouse.get_pos()[1], unpauseTriangle[0][1],unpauseTriangle[2][1])):
 							## Yes this is a box, but it wont be too far off
-							atmosphericJukebox.togglePauseState()
+							##atmosphericJukebox.togglePauseState()
+					
+					if(musicPausePlayButton.positionInButtonArea( {"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):
+						musicPausePlayButton.click(atmosphericJukebox.togglePauseState())		
+							
 				elif(event.button == 4):
 					## scroll wheel up
 					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):

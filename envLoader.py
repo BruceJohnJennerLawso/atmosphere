@@ -17,5 +17,7 @@ def getFilesList(environmentFileName):
 		reader = csv.reader(foo)
 		for row in reader:
 			output.append([row[0], int(row[1]), row[2]])
-			## 0 is filename, 1 is integer volume		
+			## 0 is filename,
+			## 1 is integer volume 0-100,
+			## 2 is type (background, short, music...)	
 	return output

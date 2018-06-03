@@ -65,7 +65,7 @@ class Jukebox(object):
 
 	
 	def __init__(self, envFileName, debugInfo=False):
-		self.backgroundSounds = []
+		##self.backgroundSounds = []
 		## background sounds, most commonly a 10,20,30 minute long ambient noise
 		## track, with a lot of rich, low level variation that playing a handful
 		## of short sounds over and over wouldnt be able to provide
@@ -73,10 +73,10 @@ class Jukebox(object):
 		## also consumes a crapton of memory unfortunately, so it carries a
 		## large ram hit, and a very long load time if we need to pull it up
 		## from memory
-		self.shortSounds = []
+		##self.shortSounds = []
 		## things like a console beeping, birds chirping, etc.
 		## anything longer than 15s is probably too long for this category
-		self.musicSounds = []
+		##self.musicSounds = []
 		## music files, commonly about 4-5 minutes long, but it can be just
 		## about any length really
 		
@@ -87,6 +87,16 @@ class Jukebox(object):
 		##    channel 1, channel 2, channel other type deals, so a better
 		##    solution would be to create objects for each type and create them
 		##    here, let them do their own things with volume, track selection **
+		
+		
+		
+		self.audioFiles = []
+		## listof {"filePath": Str, "decVolume": float, "fileType": Str}
+		##
+		## note that decVolume is 0.0 to 1.0
+		
+		## when loaded this looks like
+		## listof {"filePath": Str, "decVolume": float, "fileType": Str, "soundObject": sound.Sound}
 		
 		
 		
@@ -169,6 +179,7 @@ class Jukebox(object):
 	## each specified track in the sounds list
 
 
+
 	def loadEnvFile(self, envFileName, debugInfo=False):
 
 		if(debugInfo):
@@ -183,12 +194,35 @@ class Jukebox(object):
 			thisFilesType = sFile[2]
 			## what type of file is this in ['background', 'short', 'music']
 			
-			if(thisFilesType == 'background'):
-				self.backgroundSounds.append(sound.Sound('./data/%s' % thisFilePath, decVolume, thisFilesType))
-			elif(thisFilesType == 'short'):
-				self.shortSounds.append(sound.Sound('./data/%s' % thisFilePath, decVolume, thisFilesType))				
-			elif(thisFilesType == 'music'):
-				self.musicSounds.append(sound.Sound('./data/%s' % thisFilePath, decVolume, thisFilesType))		
+			self.audioFiles.append({"filePath": thisFilePath, "decVolume": decVolume, "fileType": thisFilesType})
+			## {"filePath": Str, "decVolume": float, "fileType": Str, "soundObject": sound.Sound}
+			
+	
+		self.audioFiles = []
+		## listof {"filePath": Str, "decVolume": float, "fileType": Str}
+			
+			
+	def loadSoundFileIntoMemory(self, byFilePath):
+		
+		
+		filePathIndex = -1
+		for audioFile in self.audioFiles:
+			if(audioFile["filePath"] == byFilePath):
+				filePathIndex = self.audioFiles.index(audioFile)
+				break
+		if(filePathIndex != -1):
+			
+			audioFile = self.audioFiles[filePathIndex]
+			
+			loadedSoundObject = sound.Sound('./data/%s' % audioFile["filePath"], audioFile["decVolume"], audioFile["fileType"])
+			
+			audioFile["soundObject"] = loadedSoundObject
+			##if(thisFilesType == 'background'):
+			##	self.backgroundSounds.append(loadedSoundObject)
+			##elif(thisFilesType == 'short'):
+			##	self.shortSounds.append(loadedSoundObject)				
+			##elif(thisFilesType == 'music'):
+			##	self.musicSounds.append(loadedSoundObject)		
 
 	
 	

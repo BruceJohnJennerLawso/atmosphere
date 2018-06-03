@@ -23,7 +23,7 @@ def getPrimesBetween(checkRange):
 			primesList.append(p)
 	return primesList
 
-class ThreadWithReturnValue(threading.Thread):
+class returnableThread(threading.Thread):
 	def __init__(self, group=None, target=None, name=None,
 		args=(), kwargs={}, Verbose=None):
 		threading.Thread.__init__(self, group, target, name, args, kwargs, Verbose)
@@ -57,16 +57,18 @@ if(__name__ == "__main__"):
 	results = []
     
 	primeSearchRanges = []
-    
+
+	rangeWidth = 2500
+	
 	startValue = 2
 	for i in range(10):
-		primeSearchRanges.append({"start": startValue, "finish": startValue+2499})
-		startValue +=2500
+		primeSearchRanges.append({"start": startValue, "finish": startValue+(rangeWidth - 1)})
+		startValue += rangeWidth
     
 	pendingThreads = []
 	
 	for searchRange in primeSearchRanges:
-		pendingThreads.append(ThreadWithReturnValue(target=getPrimesBetween, args=(searchRange,)) )
+		pendingThreads.append(returnableThread(target=getPrimesBetween, args=(searchRange,)) )
     
 	shuffle(pendingThreads)
     
@@ -84,7 +86,8 @@ if(__name__ == "__main__"):
 	finishedThreads = []
 	
 	while(True):
-		if(len(activeThreads) < 2):
+		if(len(activeThreads) < 1):
+			## oddly changing this cutoff doesnt appear to have any real effect
 			if(pendingThreads != []):
 				activeThreads.append(pendingThreads.pop())
 				activeThreads[-1].start()
@@ -98,7 +101,8 @@ if(__name__ == "__main__"):
 		if(len(finishedThreads) == totalThreadCount):
 			break
 	
-	print results	
+	for primeSet in results:
+		print primeSet	
     ##print primeCalcThread.join()
 
 

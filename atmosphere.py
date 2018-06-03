@@ -199,7 +199,7 @@ if(__name__ == "__main__"):
 	print(envFileName)
 	
 	
-	version = 0.20
+	version = 0.21
 	## program version
 	##
 	## version history goes like this:
@@ -263,7 +263,22 @@ if(__name__ == "__main__"):
 		atmosphericJukebox.togglePauseState()	
 		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, False)
 	else:
-		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, True)	
+		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, True)
+		
+	##class sliderBar(uiButton):
+	## trackPosition is a Dict{"x": Num, "y": Num}
+	## paramRange is a Dict{"min": Num, "max": Num}
+	##def __init__(self, trackPosition, trackHeight, paramRange, buttonHeight, buttonWidth, buttonColour, startValue="max"):	
+	
+	
+	masterVolumeSlider = uiTools.sliderBar({"x": 380, "y": 0}, 110, {"min": 0,"max": 100}, 10, 20, red)	
+		
+	backgroundVolumeSlider = uiTools.sliderBar({"x": 150, "y": 0}, 110, {"min": 0,"max": 100}, 10, 50, blue)		
+	musicVolumeSlider = uiTools.sliderBar({"x": 225, "y": 0}, 110, {"min": 0,"max": 100}, 10, 50, green)		
+	shortSoundVolumeSlider = uiTools.sliderBar({"x": 300, "y": 0}, 110, {"min": 0,"max": 100}, 10, 50, blue)		
+		
+	uiParts = {"musicPausePlayButton": musicPausePlayButton, "masterVolumeSlider": masterVolumeSlider, "backgroundVolumeSlider": backgroundVolumeSlider, "musicVolumeSlider": musicVolumeSlider, "shortSoundVolumeSlider": shortSoundVolumeSlider}	
+					
 	clock = pygame.time.Clock()
 	clock.tick(10)
 	
@@ -275,24 +290,27 @@ if(__name__ == "__main__"):
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
 		
-		countdownUiHeight = 2.0*atmosphericJukebox.countdownToNextShortSound()
-		pygame.draw.rect(screen,blue,(120,0,20,countdownUiHeight))	
+		##countdownUiHeight = 2.0*atmosphericJukebox.countdownToNextShortSound()
+		##pygame.draw.rect(screen,blue,(120,0,20,countdownUiHeight))	
 		## render the countdown timer as a rectangle wiping upwards as the time
 		## to the next short sound being played hits zero
 		
 		
 		
-		backgroundChannelVolumeUi = (100-100*atmosphericJukebox.getBackgroundChannelVolume())
-		pygame.draw.rect(screen,blue,(150,backgroundChannelVolumeUi,50,10))
+		##backgroundChannelVolumeUi = (100-100*atmosphericJukebox.getBackgroundChannelVolume())
+		##pygame.draw.rect(screen,blue,(150,backgroundChannelVolumeUi,50,10))
 		
-		musicChannelVolumeUi = (100-100*atmosphericJukebox.getMusicChannelVolume())
-		pygame.draw.rect(screen,green,(225,musicChannelVolumeUi,50,10))
+		##musicChannelVolumeUi = (100-100*atmosphericJukebox.getMusicChannelVolume())
+		##pygame.draw.rect(screen,green,(225,musicChannelVolumeUi,50,10))
 		
-		shortSoundChannelVolumeUi = (100-100*atmosphericJukebox.getShortSoundChannelVolume())
-		pygame.draw.rect(screen,blue,(300,shortSoundChannelVolumeUi,50,10))
+		##shortSoundChannelVolumeUi = (100-100*atmosphericJukebox.getShortSoundChannelVolume())
+		##pygame.draw.rect(screen,blue,(300,shortSoundChannelVolumeUi,50,10))
 		
-		masterVolumeUi = (100-100*atmosphericJukebox.getMasterVolume())
-		pygame.draw.rect(screen,red,(380,masterVolumeUi,20,10))		
+		##masterVolumeUi = (100-100*atmosphericJukebox.getMasterVolume())
+		##pygame.draw.rect(screen,red,(380,masterVolumeUi,20,10))		
+		for component in uiParts:
+			uiParts[component].renderButton(screen)
+		
 		
 		## render the four volume sliders for the app, positioned on the canvas
 		## depending on volume, 100% at the top, 0% at the bottom
@@ -329,25 +347,39 @@ if(__name__ == "__main__"):
 						musicPausePlayButton.click(atmosphericJukebox.togglePauseState())		
 							
 				elif(event.button == 4):
-					## scroll wheel up
-					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):
-						atmosphericJukebox.incrementBackgroundVolume(0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 225,275)):
-						atmosphericJukebox.incrementMusicVolume(0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 300,350)):	
-						atmosphericJukebox.incrementShortSoundVolume(0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 380,400)):	
-						atmosphericJukebox.incrementMasterVolume(0.1)	
+					## scroll wheel up 
+					if(backgroundVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						backgroundVolumeSlider.incrementState(10)
+						atmosphericJukebox.setBackgroundVolume(backgroundVolumeSlider.getSliderFractionalValue())
+
+					if(musicVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						musicVolumeSlider.incrementState(10)
+						atmosphericJukebox.setMusicVolume(musicVolumeSlider.getSliderFractionalValue())
+					
+					if(shortSoundVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						shortSoundVolumeSlider.incrementState(10)
+						atmosphericJukebox.setShortSoundVolume(shortSoundVolumeSlider.getSliderFractionalValue())
+					
+					if(masterVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						masterVolumeSlider.incrementState(10)
+						atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
 				if(event.button == 5):
 					## scroll wheel down
-					if(isBetween(pygame.mouse.get_pos()[0], 150,200)):
-						atmosphericJukebox.incrementBackgroundVolume(-0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 225,275)):
-						atmosphericJukebox.incrementMusicVolume(-0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 300,350)):	
-						atmosphericJukebox.incrementShortSoundVolume(-0.1)
-					elif(isBetween(pygame.mouse.get_pos()[0], 380,400)):	
-						atmosphericJukebox.incrementMasterVolume(-0.1)	
+					if(backgroundVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						backgroundVolumeSlider.incrementState(-10)
+						atmosphericJukebox.setBackgroundVolume(backgroundVolumeSlider.getSliderFractionalValue())
+
+					if(musicVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						musicVolumeSlider.incrementState(-10)
+						atmosphericJukebox.setMusicVolume(musicVolumeSlider.getSliderFractionalValue())
+					
+					if(shortSoundVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						shortSoundVolumeSlider.incrementState(-10)
+						atmosphericJukebox.setShortSoundVolume(shortSoundVolumeSlider.getSliderFractionalValue())
+					
+					if(masterVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
+						masterVolumeSlider.incrementState(-10)
+						atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
 			if(event.type == pygame.QUIT):
 				atmosphericJukebox.exitSignal = True
 			if event.type == pygame.KEYDOWN:
@@ -358,21 +390,35 @@ if(__name__ == "__main__"):
 					## this is much simpler, just fadeout the current track,
 					## and the main loop will put on a new track
 				if(event.key == pygame.K_q):
-					atmosphericJukebox.incrementBackgroundVolume(0.1)	
+					backgroundVolumeSlider.incrementState(10)
+					atmosphericJukebox.setBackgroundVolume(backgroundVolumeSlider.getSliderFractionalValue())	
 				if(event.key == pygame.K_a):
-					atmosphericJukebox.incrementBackgroundVolume(-0.1)
+					backgroundVolumeSlider.incrementState(-10)
+					atmosphericJukebox.setBackgroundVolume(backgroundVolumeSlider.getSliderFractionalValue())	
+				
 				if(event.key == pygame.K_w):
-					atmosphericJukebox.incrementMusicVolume(0.1)	
+					musicVolumeSlider.incrementState(10)
+					atmosphericJukebox.setMusicVolume(musicVolumeSlider.getSliderFractionalValue())	
 				if(event.key == pygame.K_s):
-					atmosphericJukebox.incrementMusicVolume(-0.1)
+					musicVolumeSlider.incrementState(-10)
+					atmosphericJukebox.setMusicVolume(musicVolumeSlider.getSliderFractionalValue())
+				
 				if(event.key == pygame.K_e):
-					atmosphericJukebox.incrementShortSoundVolume(0.1)	
+					shortSoundVolumeSlider.incrementState(10)
+					atmosphericJukebox.setShortSoundVolume(shortSoundVolumeSlider.getSliderFractionalValue())
 				if(event.key == pygame.K_d):
-					atmosphericJukebox.incrementShortSoundVolume(-0.1)	
+					shortSoundVolumeSlider.incrementState(-10)
+					atmosphericJukebox.setShortSoundVolume(shortSoundVolumeSlider.getSliderFractionalValue())
 				if(event.key == pygame.K_EQUALS):
-					atmosphericJukebox.incrementMasterVolume(0.1)	
+					## plus and up
+					
+					masterVolumeSlider.incrementState(10)
+					atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
 				if(event.key == pygame.K_MINUS):
-					atmosphericJukebox.incrementMasterVolume(-0.1)	
+					## minus and down
+					masterVolumeSlider.incrementState(-10)
+					atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
+				
 				if(event.key == pygame.K_SPACE):
 					atmosphericJukebox.togglePauseState()				
 				if(event.key == pygame.K_i):

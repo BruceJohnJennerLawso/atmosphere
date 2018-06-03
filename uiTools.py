@@ -165,20 +165,50 @@ class sliderBar(uiButton):
 		self.buttonColour = buttonColour
 		
 	def getSliderValue(self):
-		if(value == "max"):
+		if(self.value == "max"):
 			return self.paramRange["max"]
-		elif(value == "min"):
-			return self.paramRange["max"]
+		elif(self.value == "min"):
+			return self.paramRange["min"]
 		else:
 			return self.value
 			## return numeric value
 	
+	def getSliderFractionalValue(self):
+		if(self.value == "max"):
+			return 1.0
+		elif(self.value == "min"):
+			return 0.0
+		else:
+			return (float(self.value - self.paramRange["min"])/float(self.paramRange["max"] - self.paramRange["min"]))
 	
 	def renderButton(self, screen):
-			sliderBox = [[self.position["x"], self.position["y"]], [self.position["x"]+pauseBoxOffset, self.position["y"]], [self.position["x"]+pauseBoxOffset, self.position["y"]+self.height], [self.position["x"], self.position["y"]+self.height]]
-
-			pygame.draw.polygon(screen,self.buttonColour,sliderBox, 0)
 			
+		trueSliderRange = self.trackHeight - self.buttonHeight
+		## if you cut off the outside half edges of each button at the extreme
+		## top and bottom of the track, you get the total height of the range
+		## the 	
+			
+		currentY = int( ((self.position["y"]+self.trackHeight)-(self.buttonHeight)) - (trueSliderRange*self.getSliderFractionalValue()) )	
+		currentButtonPos = {"x": self.position["x"], "y": currentY}
+			
+		sliderBox = [[currentButtonPos["x"], currentButtonPos["y"]], \
+			 [currentButtonPos["x"]+self.buttonWidth, currentButtonPos["y"]], \
+			 [currentButtonPos["x"]+self.buttonWidth, currentButtonPos["y"]+self.buttonHeight], \
+			 [currentButtonPos["x"], currentButtonPos["y"]+self.buttonHeight]]
+
+		pygame.draw.polygon(screen,self.buttonColour,sliderBox, 0)
+			
+	def incrementState(self, change, someFunc=None, *args):
+		updatedValue = self.getSliderValue() + change
+		if(updatedValue >= self.paramRange["max"]):
+			self.value = "max"
+		elif(updatedValue <= self.paramRange["min"]):
+			self.value = "min"
+		else:
+			self.value = updatedValue
+		
+		if(someFunc != None):
+			someFunc(*args)
 			
 
 if(__name__ == "__main__"):

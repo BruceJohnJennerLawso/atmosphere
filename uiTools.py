@@ -23,15 +23,7 @@ blue=(0,0,255)
 green=(0,200,120)
 red=(170,0,0)
 
-	##unpauseTriangle = [[10, 10], [25, 20],[ 10, 30]]
 
-	
-def getUnpauseTriangleBox(horizontalOffset=False):
-	if(not horizontalOffset):
-		return [[unpauseTriangle[0][0], unpauseTriangle[0][1]],[unpauseTriangle[1][0], unpauseTriangle[2][1]]]
-	else:
-		return [[unpauseTriangle[0][0]+horizontalOffset, unpauseTriangle[0][1]],[unpauseTriangle[1][0]+horizontalOffset, unpauseTriangle[2][1]]]
-	
 
 class uiButton(object):
 	def __init__(self):

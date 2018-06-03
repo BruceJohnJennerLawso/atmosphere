@@ -259,26 +259,27 @@ if(__name__ == "__main__"):
 		print "musicStartStateSpecified = ", musicStartStateSpecified
 		print "envFilePreselected = ", envFilePreselected
 		print "timedShutdown = ", timedShutdown
+		
+		
+		
 	if(musicStartStateSpecified and startWithMusicPaused):
 		atmosphericJukebox.togglePauseState()	
 		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, False)
 	else:
 		musicPausePlayButton = uiTools.pausePlayButton({"x": 10, "y": 10}, 20, 15, True)
-		
-	##class sliderBar(uiButton):
-	## trackPosition is a Dict{"x": Num, "y": Num}
-	## paramRange is a Dict{"min": Num, "max": Num}
-	##def __init__(self, trackPosition, trackHeight, paramRange, buttonHeight, buttonWidth, buttonColour, startValue="max"):	
-	
 	
 	masterVolumeSlider = uiTools.sliderBar({"x": 380, "y": 0}, 110, {"min": 0,"max": 100}, 10, 20, red)	
-		
 	backgroundVolumeSlider = uiTools.sliderBar({"x": 150, "y": 0}, 110, {"min": 0,"max": 100}, 10, 50, blue)		
 	musicVolumeSlider = uiTools.sliderBar({"x": 225, "y": 0}, 110, {"min": 0,"max": 100}, 10, 50, green)		
 	shortSoundVolumeSlider = uiTools.sliderBar({"x": 300, "y": 0}, 110, {"min": 0,"max": 100}, 10, 50, blue)		
-		
-	uiParts = {"musicPausePlayButton": musicPausePlayButton, "masterVolumeSlider": masterVolumeSlider, "backgroundVolumeSlider": backgroundVolumeSlider, "musicVolumeSlider": musicVolumeSlider, "shortSoundVolumeSlider": shortSoundVolumeSlider}	
-					
+	## define all of the buttons	
+	uiParts = {"musicPausePlayButton": musicPausePlayButton, \
+	 "masterVolumeSlider": masterVolumeSlider, \
+	 "backgroundVolumeSlider": backgroundVolumeSlider, \
+	 "musicVolumeSlider": musicVolumeSlider, \
+	 "shortSoundVolumeSlider": shortSoundVolumeSlider, \
+	 }	
+	## add all buttons to a dict so we can loop through
 	clock = pygame.time.Clock()
 	clock.tick(10)
 	
@@ -290,44 +291,16 @@ if(__name__ == "__main__"):
 	while(not atmosphericJukebox.exitSignal):
 		screen.fill((0,0,0))
 		
-		##countdownUiHeight = 2.0*atmosphericJukebox.countdownToNextShortSound()
-		##pygame.draw.rect(screen,blue,(120,0,20,countdownUiHeight))	
+		countdownUiHeight = 2.0*atmosphericJukebox.countdownToNextShortSound()
+		pygame.draw.rect(screen,blue,(120,0,20,countdownUiHeight))	
 		## render the countdown timer as a rectangle wiping upwards as the time
 		## to the next short sound being played hits zero
 		
-		
-		
-		##backgroundChannelVolumeUi = (100-100*atmosphericJukebox.getBackgroundChannelVolume())
-		##pygame.draw.rect(screen,blue,(150,backgroundChannelVolumeUi,50,10))
-		
-		##musicChannelVolumeUi = (100-100*atmosphericJukebox.getMusicChannelVolume())
-		##pygame.draw.rect(screen,green,(225,musicChannelVolumeUi,50,10))
-		
-		##shortSoundChannelVolumeUi = (100-100*atmosphericJukebox.getShortSoundChannelVolume())
-		##pygame.draw.rect(screen,blue,(300,shortSoundChannelVolumeUi,50,10))
-		
-		##masterVolumeUi = (100-100*atmosphericJukebox.getMasterVolume())
-		##pygame.draw.rect(screen,red,(380,masterVolumeUi,20,10))		
 		for component in uiParts:
 			uiParts[component].renderButton(screen)
-		
-		
 		## render the four volume sliders for the app, positioned on the canvas
 		## depending on volume, 100% at the top, 0% at the bottom
-		
-		
-		##if(atmosphericJukebox.isMusicPaused() == True):
-		##	pygame.draw.polygon(screen,blue,unpauseTriangle, 0)
-			## draw a play symbol that the user can click to start playing the
-			## music
-		
-		##else:
-		##	pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox()[0], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[0][1]], [getUnpauseTriangleBox()[0][0]+5, getUnpauseTriangleBox()[1][1]], [getUnpauseTriangleBox()[0][0], getUnpauseTriangleBox()[1][1]] ], 0)
-		##	pygame.draw.polygon(screen,blue,[getUnpauseTriangleBox(10)[0], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[0][1]], [getUnpauseTriangleBox(10)[0][0]+5, getUnpauseTriangleBox(10)[1][1]], [getUnpauseTriangleBox(10)[0][0], getUnpauseTriangleBox(10)[1][1]] ], 0)
-			## draw a pause symbol that the user can click to pause the music
-			
-		musicPausePlayButton.renderButton(screen)	
-			
+
 		for event in pygame.event.get():
 			
 			def isBetween(value, lower, upper):
@@ -338,11 +311,6 @@ if(__name__ == "__main__"):
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if(event.button == 1):
 					## left click
-					##if(isBetween(pygame.mouse.get_pos()[0], unpauseTriangle[0][0],unpauseTriangle[1][0])):
-					##	if(isBetween(pygame.mouse.get_pos()[1], unpauseTriangle[0][1],unpauseTriangle[2][1])):
-							## Yes this is a box, but it wont be too far off
-							##atmosphericJukebox.togglePauseState()
-					
 					if(musicPausePlayButton.positionInButtonArea( {"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):
 						musicPausePlayButton.click(atmosphericJukebox.togglePauseState())		
 							
@@ -363,6 +331,7 @@ if(__name__ == "__main__"):
 					if(masterVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
 						masterVolumeSlider.incrementState(10)
 						atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
+				
 				if(event.button == 5):
 					## scroll wheel down
 					if(backgroundVolumeSlider.positionInButtonEffectiveArea({"x": pygame.mouse.get_pos()[0], "y": pygame.mouse.get_pos()[1]})):	
@@ -382,13 +351,15 @@ if(__name__ == "__main__"):
 						atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
 			if(event.type == pygame.QUIT):
 				atmosphericJukebox.exitSignal = True
+			
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_LEFT:
 					pass
 				if event.key == pygame.K_RIGHT:
 					atmosphericJukebox.fadeOutMusicTrack(1000)
-					## this is much simpler, just fadeout the current track,
-					## and the main loop will put on a new track
+					## fade forward to the next track if the current one sucks
+				
+				## background sounds
 				if(event.key == pygame.K_q):
 					backgroundVolumeSlider.incrementState(10)
 					atmosphericJukebox.setBackgroundVolume(backgroundVolumeSlider.getSliderFractionalValue())	
@@ -396,6 +367,7 @@ if(__name__ == "__main__"):
 					backgroundVolumeSlider.incrementState(-10)
 					atmosphericJukebox.setBackgroundVolume(backgroundVolumeSlider.getSliderFractionalValue())	
 				
+				## music
 				if(event.key == pygame.K_w):
 					musicVolumeSlider.incrementState(10)
 					atmosphericJukebox.setMusicVolume(musicVolumeSlider.getSliderFractionalValue())	
@@ -403,15 +375,17 @@ if(__name__ == "__main__"):
 					musicVolumeSlider.incrementState(-10)
 					atmosphericJukebox.setMusicVolume(musicVolumeSlider.getSliderFractionalValue())
 				
+				## short sounds
 				if(event.key == pygame.K_e):
 					shortSoundVolumeSlider.incrementState(10)
 					atmosphericJukebox.setShortSoundVolume(shortSoundVolumeSlider.getSliderFractionalValue())
 				if(event.key == pygame.K_d):
 					shortSoundVolumeSlider.incrementState(-10)
 					atmosphericJukebox.setShortSoundVolume(shortSoundVolumeSlider.getSliderFractionalValue())
+				
+				## master volume
 				if(event.key == pygame.K_EQUALS):
-					## plus and up
-					
+					## plus and up	
 					masterVolumeSlider.incrementState(10)
 					atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
 				if(event.key == pygame.K_MINUS):
@@ -419,19 +393,33 @@ if(__name__ == "__main__"):
 					masterVolumeSlider.incrementState(-10)
 					atmosphericJukebox.setMasterVolume(masterVolumeSlider.getSliderFractionalValue())
 				
+				## pause/play music
 				if(event.key == pygame.K_SPACE):
 					atmosphericJukebox.togglePauseState()				
+				
+				## check info
 				if(event.key == pygame.K_i):
-					print "Channel 1: %r, Channel 2: %r" % (atmosphericJukebox.background1Channel.get_busy(), atmosphericJukebox.background1Channel.get_busy())
+					if(debugInfo):
+						print "Channel 1: %r, Channel 2: %r" % (atmosphericJukebox.background1Channel.get_busy(), atmosphericJukebox.background1Channel.get_busy())
 		
 		pygame.event.poll()
+		## check for events
 		clock.tick(10)	
+		## tick 10 milliseconds
 		atmosphericJukebox.loop()
+		## update the jukebox object
+		
 		if(timedShutdown):
 			currentRuntime = time.time() - startupTime
 			if(currentRuntime >= shutdownDelay):
 				atmosphericJukebox.exitSignal = True		
+		## if a timedShutdown was requested, keep running down the timer until
+		## we hit zero
+		
 		pygame.display.update()
+		## pygame internal stuff
+		
 	if(timedShutdown):
-		print "Successfully exited after %i seconds, targeted shutdown was set for %i s" % ((time.time()-startupTime), shutdownDelay)	
+		if(debugInfo):
+			print "Successfully exited after %i seconds, targeted shutdown was set for %i s" % ((time.time()-startupTime), shutdownDelay)	
 

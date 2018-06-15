@@ -285,6 +285,11 @@ class Jukebox(object):
 	## once we're already off and running, choosing the next file to play
 	## becomes a lot trickier,
 
+
+	def chooseRandomShortSound(self, andPlay=True):
+		pass
+
+
 	def chooseRandomBackground(self, channel, andPlay=False):
 		newRandomBackground = self.getRandomBackgroundSoundKey()
 		

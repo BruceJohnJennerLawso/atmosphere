@@ -400,8 +400,13 @@ if(__name__ == "__main__"):
 				## check info
 				if(event.key == pygame.K_i):
 					if(debugInfo):
-						print "Channel 1: %r, Channel 2: %r" % (atmosphericJukebox.background1Channel.get_busy(), atmosphericJukebox.background1Channel.get_busy())
-		
+						print "Channel 1: %r, Channel 2: %r" % (atmosphericJukebox.backgroundChannel1.get_busy(), atmosphericJukebox.backgroundChannel2.get_busy())
+					for audioFile in atmosphericJukebox.audioFiles:
+						print audioFile, "	", atmosphericJukebox.audioFiles[audioFile].isLoaded()
+				## time to create a diagnostic keypress that will show the current states
+				## of every file stored inside the jukebox
+				
+				
 		pygame.event.poll()
 		## check for events
 		clock.tick(10)	

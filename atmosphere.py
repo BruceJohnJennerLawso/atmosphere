@@ -249,7 +249,7 @@ if(__name__ == "__main__"):
 			
 	if(debugInfo):
 		print "Received %i sounds" % len(envLoader.getFilesList(envFileName))
-		print "%i background tracks, %i short sounds, %i music tracks" % (len(atmosphericJukebox.backgroundSounds), len(atmosphericJukebox.shortSounds), len(atmosphericJukebox.musicSounds))
+		print "%i background tracks, %i music tracks" % (atmosphericJukebox.getTotalBackgroundSoundCount(), atmosphericJukebox.getTotalMusicFileCount())
 	
 	startupTime = time.time()
 	atmosphericJukebox.play()

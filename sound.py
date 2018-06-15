@@ -5,6 +5,7 @@
 import pygame
 
 
+
 class Sound(object):
 	
 	## constructor
@@ -138,6 +139,10 @@ class Sound(object):
 	
 	def getSoundType(self):
 		return self.soundType
+
+
+	def getSoundPath(self):
+		return self. filePath
 
 
 

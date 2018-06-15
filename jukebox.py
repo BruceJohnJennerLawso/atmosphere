@@ -90,7 +90,7 @@ class Jukebox(object):
 		
 		
 		
-		self.audioFiles = []
+		self.audioFiles = {}
 		## listof {"filePath": Str, "decVolume": float, "fileType": Str}
 		##
 		## note that decVolume is 0.0 to 1.0
@@ -102,8 +102,8 @@ class Jukebox(object):
 		
 		self.musicChannel = pygame.mixer.Channel(5)
 		
-		self.background1Channel = pygame.mixer.Channel(3)
-		self.background2Channel = pygame.mixer.Channel(4)
+		self.backgroundChannel1 = pygame.mixer.Channel(3)
+		self.backgroundChannel2 = pygame.mixer.Channel(4)
 		## we allocate 2 channels to the background, since thats really one of
 		## the most important parts of the atmosphere, and having two ambient
 		## audio tracks gives us more bang for our buck than two musics or
@@ -150,6 +150,11 @@ class Jukebox(object):
 		
 		
 
+		self.backgroundLineup = {"A": [], "B": []}
+		
+		self.musicLineup = []
+		
+		self.previousMusic = []
 		
 		self.chooseInitialRandomBackgrounds()
 		## pick out a pair of background noise tracks at random and slot them in
@@ -157,9 +162,9 @@ class Jukebox(object):
 		self.chooseInitialRandomMusic()
 		## randomly select our first music track to play
 
-		self.randomShortSound = random.choice(self.shortSounds)
-		self.randomShortSound.loadSound()
-		self.randomShortSound.setVolume(0.05)
+		##self.randomShortSound = random.choice(self.shortSounds)
+		##self.randomShortSound.loadSound()
+		##self.randomShortSound.setVolume(0.05)
 
 		self.lastShortSoundTime = time.time()
 		## start our recording clock, so the first randomly spaced short sound
@@ -167,6 +172,8 @@ class Jukebox(object):
 		self.waitUntilNextShortSound = getValueFromGaussian(30.0, 10.0, 5.0)
 		## that initial wait
 		
+		
+
 		## once this is all done, the object is just waiting for
 		## play() to be called		
 
@@ -193,38 +200,43 @@ class Jukebox(object):
 			## adjust it to be correct for a scale from 0.0 to 1.0
 			thisFilesType = sFile[2]
 			## what type of file is this in ['background', 'short', 'music']
-			
-			self.audioFiles.append({"filePath": thisFilePath, "decVolume": decVolume, "fileType": thisFilesType})
-			## {"filePath": Str, "decVolume": float, "fileType": Str, "soundObject": sound.Sound}
-			
-	
-		self.audioFiles = []
-		## listof {"filePath": Str, "decVolume": float, "fileType": Str}
-			
-			
-	def loadSoundFileIntoMemory(self, byFilePath):
-		
-		
-		filePathIndex = -1
-		for audioFile in self.audioFiles:
-			if(audioFile["filePath"] == byFilePath):
-				filePathIndex = self.audioFiles.index(audioFile)
-				break
-		if(filePathIndex != -1):
-			
-			audioFile = self.audioFiles[filePathIndex]
-			
-			loadedSoundObject = sound.Sound('./data/%s' % audioFile["filePath"], audioFile["decVolume"], audioFile["fileType"])
-			
-			audioFile["soundObject"] = loadedSoundObject
-			##if(thisFilesType == 'background'):
-			##	self.backgroundSounds.append(loadedSoundObject)
-			##elif(thisFilesType == 'short'):
-			##	self.shortSounds.append(loadedSoundObject)				
-			##elif(thisFilesType == 'music'):
-			##	self.musicSounds.append(loadedSoundObject)		
 
+
+			loadedSoundObject = sound.Sound('./data/%s' % thisFilePath, decVolume, thisFilesType)
+			
+			self.audioFiles[thisFilePath] = loadedSoundObject
+			
+	def loadSoundFileIntoMemory(self, byFilePath):			
+		self.audioFiles[byFilePath].loadSound()
+
+	def unloadSoundFileFromMemory(self, byFilePath):
+		self.audioFiles[byFilePath].clearSound()
+		## should purge the object from memory along with its memory footprint
 	
+	
+	def getRandomBackgroundSoundKey(self):
+		choice = random.choice([key for key in self.audioFiles if self.audioFiles[key].getSoundType() == 'background'])
+		return choice
+
+	def getTotalBackgroundSoundCount(self):
+		return len([key for key in self.audioFiles if self.audioFiles[key].getSoundType() == 'background'])
+		
+
+	def getTotalMusicFileCount(self):
+		return len([key for key in self.audioFiles if self.audioFiles[key].getSoundType() == 'music'])		
+
+
+	def getRandomShortSoundKey(self):
+		choice = random.choice([key for key in self.audioFiles if self.audioFiles[key].getSoundType() == 'short'])
+		return choice	
+
+	def getRandomMusicSoundKey(self):
+		choice = random.choice([key for key in self.audioFiles if self.audioFiles[key].getSoundType() == 'music'])
+		return choice	
+	
+	
+	def soundFileLoaded(self, byFilePath):
+		return self.audioFiles[byFilePath].isLoaded()
 	
 	## method
 	
@@ -232,29 +244,29 @@ class Jukebox(object):
 	## load it into memory
 
 	def chooseInitialRandomBackgrounds(self):
-		self.firstRandomChoice = random.choice(self.backgroundSounds)
-		self.secondRandomChoice = random.choice(self.backgroundSounds)
-		## use a random selector from our list of sounds to get two random
-		## background tracks
-		while(self.firstRandomChoice == self.secondRandomChoice):
+		firstChoice = self.getRandomBackgroundSoundKey()
+		secondChoice = self.getRandomBackgroundSoundKey()		
+		
+		while(firstChoice == secondChoice):
 			## sometimes we choose the same track twice, especially if the list
 			## is small
 			
 			## ** note this comparison may be slow af, so rewriting this to
 			## crosscheck only file names might be a better idea for performance
 			## **
-			self.secondRandomChoice = random.choice(self.backgroundSounds)
+			secondChoice = self.getRandomBackgroundSoundKey()
 			## keep trying until we get two different sounds
-	
-		##self.firstRandomChoice.loadSound()
-		##self.secondRandomChoice.loadSound()
-		## we picked two sounds at random, now we want them loaded up into
-		## memory so they can actually be played
-		for snd in self.backgroundSounds:
-			snd.loadSound()
-		## load up all of the background tracks because theyre taking way too
-		## long to load on the fly (its creating a very noticeable pause where
-		## the app goes silent, which is not the desired behaviour)
+
+		self.loadSoundFileIntoMemory(firstChoice)
+		self.loadSoundFileIntoMemory(secondChoice)
+		## these two calls will need to be multithreaded to make the app run
+		## smoothly
+		##self.backgroundLineup = {"A": [], "B": []}
+		
+		self.backgroundLineup["A"].append(firstChoice)
+		self.backgroundLineup["B"].append(secondChoice)
+		
+
 
 	## method
 	
@@ -262,10 +274,79 @@ class Jukebox(object):
 	## music track to play and load it into memory
 
 	def chooseInitialRandomMusic(self):
-		self.randomMusic = random.choice(self.musicSounds)
-		## random select one from the list
-		self.randomMusic.loadSound()
-		## load it up
+		
+		randomMusicKey = self.getRandomMusicSoundKey()
+		self.loadSoundFileIntoMemory(randomMusicKey)
+		
+		self.musicLineup.append(randomMusicKey)
+
+	## method
+	
+	## once we're already off and running, choosing the next file to play
+	## becomes a lot trickier,
+
+	def chooseRandomBackground(self, channel, andPlay=False):
+		newRandomBackground = self.getRandomBackgroundSoundKey()
+		
+		if(self.getTotalBackgroundSoundCount() > 2):
+			while((newRandomBackground == self.getBackgroundSoundByChannelNo(1))and(newRandomBackground == self.getBackgroundSoundByChannelNo(2))):
+				newRandomBackground = self.getRandomBackgroundSoundKey()
+		
+		if(channel == 1):
+			##self.firstRandomChoice.stop()
+			
+			## this would be a good safety feature for the future, but I dont
+			## want to gum things up just yet
+			
+			
+			##self.firstRandomChoice.clearSound()
+			## weve chosen a new file randomly to play in this slot, so we clear
+			## out the old file
+			## this was taking way too long with background tracks, makes for a
+			## way too noticeable pause where the app goes silent, so Im going
+			## to give leaving everything in memory a try
+			
+			## this should hopefully be possible to implement in the future with
+			## multithreading, just have that laggy file loading step done ahead
+			## of time in its own thread, while the main app does its own thing
+			##self.backgroundLineup = {"A": [], "B": []}
+			##self.musicBackground = []
+			
+			self.backgroundLineup["A"].append(newRandomBackground)
+			
+			##self.firstRandomChoice = newRandomBackground
+			## assign the new file to this slot
+			
+			if(self.backgroundLineup["A"].index(newRandomBackground) <= 1):
+				self.loadSoundFileIntoMemory(newRandomBackground)
+			##self.firstRandomChoice.loadSound()	
+			## load it up into memory (if necessary
+			
+			
+			if(andPlay):
+				## if we specified in the parameters that we wanted the sound
+				## to start playing right away, we get it rocking on the correct
+				## channel
+				self.backgroundChannel1.play(self.audioFiles[newRandomBackground].getSound())
+				self.audioFiles[newRandomBackground].incrementPlayCounter()
+				## dont forget to increment the play counter for this thing
+		elif(channel == 2):
+			##self.secondRandomChoice.clearSound()
+			self.backgroundLineup["B"].append(newRandomBackground)
+
+			if(self.backgroundLineup["B"].index(newRandomBackground) <= 1):
+				self.loadSoundFileIntoMemory(newRandomBackground)
+
+			##self.secondRandomChoice = newRandomBackground
+			##self.secondRandomChoice.loadSound()
+			## (if necessary)
+			if(andPlay):
+				self.backgroundChannel2.play(self.audioFiles[newRandomBackground].getSound())
+				self.audioFiles[newRandomBackground].incrementPlayCounter()
+		else:
+			## fuck
+			print "Bad call to chooseRandomBackground(self, %i, andPlay)" % channel
+			## nonexistent channel provided
 
 
 
@@ -285,13 +366,27 @@ class Jukebox(object):
 	## have been assigned 
 	## (so only once the initial choose functions have been called)
 
-	def play(self):
+
+	def playMusic(self):
 		if(not self.musicChannel.get_busy()):
-			self.musicChannel.play(self.randomMusic.getSound())
-		if(not self.background1Channel.get_busy()):
-			self.background1Channel.play(self.firstRandomChoice.getSound())	
-		if(not self.background2Channel.get_busy()):
-			self.background2Channel.play(self.secondRandomChoice.getSound())
+			nextMusicUp = self.musicLineup[0]
+			self.musicChannel.play(self.audioFiles[nextMusicUp].getSound())
+
+	def playBackground1(self):
+		if(not self.backgroundChannel1.get_busy()):
+			nextBackgroundUp = self.backgroundLineup["A"][0]
+			self.backgroundChannel1.play(self.audioFiles[nextBackgroundUp].getSound())
+
+	def playBackground2(self):
+		if(not self.backgroundChannel2.get_busy()):
+			nextBackgroundUp = self.backgroundLineup["B"][0]
+			self.backgroundChannel2.play(self.audioFiles[nextBackgroundUp].getSound())
+
+
+	def play(self):
+		self.playMusic()
+		self.playBackground1()
+		self.playBackground2()
 		## check if each channel is busy in sequence, if theyre not playing
 		## their shit, we want them to be, so we tell the channel to play using
 		## its assigned sound object				
@@ -357,73 +452,19 @@ class Jukebox(object):
 	## channel based on what number of channel we are curious about
 	## (first -> 1, second -> 2)
 	
-	## getBackgroundSoundByChannelNo: Int -> sound
+	## getBackgroundSoundByChannelNo: Int -> key
 
 	def getBackgroundSoundByChannelNo(self, channel):
 		if(channel == 1):
-			return self.firstRandomChoice
+			return self.backgroundLineup["A"][0]
 		elif(channel == 2):
-			return self.secondRandomChoice
+			return self.backgroundLineup["B"][0]
 		else:
 			print "bad call to getBackgroundSoundByChannelNo(%i)" % channel
 			
 	
 
 
-	## method
-	
-	## once we're already off and running, choosing the next file to play
-	## becomes a lot trickier,
-
-	def chooseRandomBackground(self, channel, andPlay=False):
-		newRandomBackground = random.choice(self.backgroundSounds)
-		while((newRandomBackground == self.getBackgroundSoundByChannelNo(1))and(newRandomBackground == self.getBackgroundSoundByChannelNo(2))):
-			newRandomBackground = random.choice(self.backgroundSounds)
-		
-		if(channel == 1):
-			##self.firstRandomChoice.stop()
-			
-			## this would be a good safety feature for the future, but I dont
-			## want to gum things up just yet
-			
-			
-			##self.firstRandomChoice.clearSound()
-			## weve chosen a new file randomly to play in this slot, so we clear
-			## out the old file
-			## this was taking way too long with background tracks, makes for a
-			## way too noticeable pause where the app goes silent, so Im going
-			## to give leaving everything in memory a try
-			
-			## this should hopefully be possible to implement in the future with
-			## multithreading, just have that laggy file loading step done ahead
-			## of time in its own thread, while the main app does its own thing
-			
-			self.firstRandomChoice = newRandomBackground
-			## assign the new file to this slot
-			
-			self.firstRandomChoice.loadSound()	
-			## load it up into memory (if necessary
-			
-			
-			if(andPlay):
-				## if we specified in the parameters that we wanted the sound
-				## to start playing right away, we get it rocking on the correct
-				## channel
-				self.background1Channel.play(self.firstRandomChoice.getSound())
-				self.firstRandomChoice.incrementPlayCounter()
-				## dont forget to increment the play counter for this thing
-		elif(channel == 2):
-			##self.secondRandomChoice.clearSound()
-			self.secondRandomChoice = newRandomBackground
-			self.secondRandomChoice.loadSound()
-			## (if necessary)
-			if(andPlay):
-				self.background2Channel.play(self.secondRandomChoice.getSound())
-				self.secondRandomChoice.incrementPlayCounter()
-		else:
-			## fuck
-			print "Bad call to chooseRandomBackground(self, %i, andPlay)" % channel
-			## nonexistent channel provided
 	
 	## method
 	
@@ -435,25 +476,52 @@ class Jukebox(object):
 	## loop as drastically as background loading was, so loading in oldschool
 	## sequential with the main program flow is probably fine for the moment,
 	## but it should really be parallelized at some point
+
+	def addRandomSelectionToMusicLineup(self):
+		
+		
+		newRandomMusic = self.getRandomMusicSoundKey()
+		
+		if(len(self.musicLineup) != 0):
+			while(newRandomMusic == self.musicLineup[-1]):
+				newRandomMusic = self.getRandomMusicSoundKey()			
+			
+			## if I want to slice off only a certain length off the end use
+			## foo =[1,2,3,4,5,6,7,8]
+			## foo[-4:-1]
+			## ie fourth last to last
+		self.musicLineup.append(newRandomMusic)
 	
 	def chooseRandomMusic(self,andPlay=False):
-		newRandomMusic = random.choice(self.musicSounds)
+		newRandomMusic = self.getRandomMusicSoundKey()
 		## make a random selection from the music list for what to put on next
-		while(newRandomMusic == self.randomMusic):
-			newRandomMusic = random.choice(self.musicSounds)
+		while(newRandomMusic == self.musicLineup[-1]):
+			newRandomMusic = self.getRandomMusicSoundKey()
 			## if we get a repeat, try again because repetition is bad
+			##
+			## make sure that it isnt the same as the last one added (index -1)
 		
-		self.randomMusic.clearSound()	
+
+		
+		self.audioFiles[self.musicLineup[0]].clearSound()	
 		## clear out the memory occupied by the old sound in memory
-		self.randomMusic = newRandomMusic
-		## assign the new track as whats on
-		if(not self.randomMusic.isLoaded()):
-			self.randomMusic.loadSound()
+		
+		self.previousMusic.append(self.musicLineup.pop(0))
+		## add the most recently played track (just finished playing) to the
+		## "previously played" list and pop it out of the current lineup
+		self.addRandomSelectionToMusicLineup()
+		## make sure at least one track is in the music lineup
+		
+		nextRandomMusicUp = self.musicLineup[0]
+		## assign the new track as whatevers bubbled to the top (start) of the
+		## list
+		if(not self.audioFiles[nextRandomMusicUp].isLoaded()):
+			self.audioFiles[nextRandomMusicUp].loadSound()
 			## check if our file is loaded into memory, and load it up if not
 		if(andPlay):
-			print "Playing track %s" % self.randomMusic.filePath
-			self.musicChannel.play(self.randomMusic.getSound())			
-			self.randomMusic.incrementPlayCounter()
+			print "Playing track %s" % self.musicLineup[0]
+			self.musicChannel.play(self.audioFiles[nextRandomMusicUp].getSound())			
+			self.audioFiles[nextRandomMusicUp].incrementPlayCounter()
 			## start playing the song on the music channel
 	
 	
@@ -468,18 +536,18 @@ class Jukebox(object):
 	## load everything into memory with short sounds being so small), loads up
 	## the new choice, and starts it playing (if requested andPlay)
 			
-	def chooseRandomShortSound(self,andPlay=False):
-		newRandomShortSound = random.choice(self.shortSounds)
-		while(newRandomShortSound == self.randomShortSound):
-			newRandomShortSound = random.choice(self.shortSounds)	
+	##def chooseRandomShortSound(self,andPlay=False):
+	##	newRandomShortSound = random.choice(self.shortSounds)
+	##	while(newRandomShortSound == self.randomShortSound):
+	##		newRandomShortSound = random.choice(self.shortSounds)	
 		
-		self.randomShortSound.clearSound()	
-		self.randomShortSound = newRandomShortSound
-		self.randomShortSound.loadSound()
-		self.randomShortSound.setVolume(0.05)
-		if(andPlay):
-			self.shortSoundChannel.play(self.randomShortSound.getSound())			
-			self.randomShortSound.incrementPlayCounter()			
+	##	self.randomShortSound.clearSound()	
+	##	self.randomShortSound = newRandomShortSound
+	##	self.randomShortSound.loadSound()
+	##	self.randomShortSound.setVolume(0.05)
+	##	if(andPlay):
+	##		self.shortSoundChannel.play(self.randomShortSound.getSound())			
+	##		self.randomShortSound.incrementPlayCounter()			
 
 
 	## get channel volumes
@@ -560,8 +628,8 @@ class Jukebox(object):
 	## have based on whats stored in this object
 
 	def applyOutputChannelVolumes(self):
-		self.background1Channel.set_volume(self.getBackgroundOutputVolume())
-		self.background2Channel.set_volume(self.getBackgroundOutputVolume())
+		self.backgroundChannel1.set_volume(self.getBackgroundOutputVolume())
+		self.backgroundChannel2.set_volume(self.getBackgroundOutputVolume())
 		self.shortSoundChannel.set_volume(self.getShortSoundOutputVolume())
 		self.musicChannel.set_volume(self.getMusicOutputVolume())	
 
@@ -686,11 +754,11 @@ class Jukebox(object):
 			## music has finished, need to put another track on0
 			self.chooseRandomMusic(andPlay=True)
 			
-		if(not self.background1Channel.get_busy()):		
+		if(not self.backgroundChannel1.get_busy()):		
 			## background sound on channel 1 has finished,
 			## need to put another track on
 			self.chooseRandomBackground(1, andPlay=True)
-		if(not self.background2Channel.get_busy()):		
+		if(not self.backgroundChannel2.get_busy()):		
 			## background sound on channel 2 has finished,
 			## need to put another track on
 			self.chooseRandomBackground(2, andPlay=True)
